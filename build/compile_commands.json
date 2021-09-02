@@ -1,0 +1,12 @@
+[
+{
+  "directory": "/home/jvont/Projects/ndim-vec/build",
+  "command": "/usr/bin/x86_64-linux-gnu-g++-7 -I/home/jvont/Projects/ndim-vec/src -g -std=c++1z -o CMakeFiles/main.dir/main.cpp.o -c /home/jvont/Projects/ndim-vec/main.cpp",
+  "file": "/home/jvont/Projects/ndim-vec/main.cpp"
+},
+{
+  "directory": "/home/jvont/Projects/ndim-vec/build",
+  "command": "/usr/bin/x86_64-linux-gnu-g++-7 -I/home/jvont/Projects/ndim-vec/src -g -std=c++1z -o src/CMakeFiles/ndvlib.dir/ndv/vec.cpp.o -c /home/jvont/Projects/ndim-vec/src/ndv/vec.cpp",
+  "file": "/home/jvont/Projects/ndim-vec/src/ndv/vec.cpp"
+}
+]
