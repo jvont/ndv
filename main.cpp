@@ -2,23 +2,20 @@
 
 #include <iostream>
 
+// TODO: look into workarounds for custom member amounts per class
+// https://stackoverflow.com/questions/3836648/structure-or-class-with-variable-number-of-members
+
 int main()
 {
-  Vec<2, int> v1;
-  Vec<2, int> v2;
+  Vec3<int> v(1, 5, 4);
+  v.x() += 1;
+  v[0] += 1;
 
-  v1.values[0] = 5;
-  v1.values[1] = 6;
-  v2.values[0] = 1;
-  v2.values[1] = 1;
+  v.y() = 2;
 
-  std::cout << v1.values[0] << ", " << v1.values[1] << " + " 
-            << v2.values[0] << ", " << v2.values[1] << std::endl;
+  v.z() *= 2;
 
-  v1 += v2;
-
-  std::cout << v1.values[0] << ", " << v1.values[1] << " + " 
-            << v2.values[0] << ", " << v2.values[1] << std::endl;
+  std::cout << v.to_string() << std::endl;
 
   return 0;
 }
