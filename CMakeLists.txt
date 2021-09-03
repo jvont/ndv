@@ -3,6 +3,8 @@ project(ndv VERSION 0.1
             DESCRIPTION "N-dimensional spatial vector templates"
             LANGUAGES CXX)
 
+###### project config ######
+
 # enable BUILD_TESTING
 include(CTest)
 
@@ -16,7 +18,12 @@ if(${CMAKE_VERSION} VERSION_LESS 3.14)
   include(FetchContent_MakeAvailable)
 endif()
 
+###### link libraries/executable ######
+
 add_subdirectory(src)
+
+add_executable(main main.cpp)
+target_link_libraries(main PRIVATE ndvlib)
 
 if(BUILD_TESTING)
   add_subdirectory(tests)
