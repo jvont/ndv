@@ -1,5 +1,5 @@
 file(GLOB_RECURSE ndvlib_SOURCES CONFIGURE_DEPENDS 
-  ${CMAKE_CURRENT_SOURCE_DIR}/*.cpp
+  *.cpp
 )
 add_library(ndvlib ${ndvlib_SOURCES})
 

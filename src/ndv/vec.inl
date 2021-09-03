@@ -1,7 +1,3 @@
-#include <ndv/vec.h>
-
-#include <cstdarg>
-
 template<int N, typename T>
 Vec<N, T>::Vec() : values{static_cast<T>(0)} {}
 
@@ -292,15 +288,3 @@ bool operator>=(const Vec<N, T>& v1, const Vec<N, T>& v2)
   }
   return true; // all equal
 }
-
-template struct Vec<2, int>;
-template struct Vec<2, float>;
-template struct Vec<2, double>;
-
-template struct Vec<3, int>;
-template struct Vec<3, float>;
-template struct Vec<3, double>;
-
-template struct Vec<4, int>;
-template struct Vec<4, float>;
-template struct Vec<4, double>;
