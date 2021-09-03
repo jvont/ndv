@@ -6,6 +6,9 @@
 #include <string>
 using str = std::string;
 
+#define GEN_CLASS_ATTRIBUTES(typename, ...)\
+  struct { typename __VA_ARGS__; };\
+
 template<int N, typename T>
 struct Vec
 {

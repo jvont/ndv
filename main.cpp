@@ -5,6 +5,8 @@
 // TODO: look into workarounds for custom member amounts per class
 // https://stackoverflow.com/questions/3836648/structure-or-class-with-variable-number-of-members
 
+MAKE_ATTRIBUTES(Vec, int, x, y, z);
+
 int main()
 {
   Vec3<int> v(1, 5, 4);
