@@ -1,20 +1,17 @@
-#include <ndv/vec.h>
+#include <ndv/vec/vec2.h>
 
 #include <iostream>
 #include <array>
 
 int main()
 {
-  Vec<2, int> v1(3, 3);
-  Vec<2, int> v2(1, 2);
+  // Vec2<int> vi(1, 2);
+  // vi += vi;
 
-  v1 += v2;
-  std::cout << "v1: " << v1[0] << ", " << v1[1] << std::endl;
-  std::cout << "v2: " << v2[0] << ", " << v2[1] << std::endl;
+  Vec2<float> vf(1.0f, 2.9f);
+  vf += vf;
 
-  v1 -= v2;
-  std::cout << "v1: " << v1[0] << ", " << v1[1] << std::endl;
-  std::cout << "v2: " << v2[0] << ", " << v2[1] << std::endl;
+  std::cout << vf.norm() << std::endl;
 
   return 0;
 }
