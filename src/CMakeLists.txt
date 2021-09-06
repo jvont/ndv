@@ -1,13 +1,20 @@
-file(GLOB_RECURSE ndvlib_SOURCES CONFIGURE_DEPENDS 
-  *.cpp
-)
-add_library(ndvlib ${ndvlib_SOURCES})
+# file(GLOB_RECURSE ndvlib_SOURCES CONFIGURE_DEPENDS 
+#   *.cpp
+# )
+# add_library(ndvlib ${ndvlib_SOURCES})
+
+# target_include_directories(ndvlib 
+#   PUBLIC
+#     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
+# )
+
+add_library(ndvlib INTERFACE)
 
 target_include_directories(ndvlib 
-  PUBLIC
+  INTERFACE
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
 )
 
 # fine-grained control of cxx standard
-target_compile_features(ndvlib PUBLIC cxx_std_17)
+target_compile_features(ndvlib INTERFACE cxx_std_17)
 set_target_properties(ndvlib PROPERTIES CXX_EXTENSIONS OFF)
