@@ -6,9 +6,7 @@ using namespace bones;
 
 int main()
 {
-
-  Mat<2, 2, float> m1( {0, 1, 2, 3} );
-  Mat<2, 2, float> m2( {{0, 1}, {2, 3}} );
+  Mat<3, 3, float> m;
 
   return 0;
 }

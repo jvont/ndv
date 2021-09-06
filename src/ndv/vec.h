@@ -24,9 +24,9 @@ namespace bones
     Vec& operator+=(const Vec& v);
     Vec& operator-=(const Vec& v);
     Vec& operator*=(const Vec& v);
-    Vec& operator*=(const T& s);
+    Vec& operator*=(const T& rhs);
     Vec& operator/=(const Vec& v);
-    Vec& operator/=(const T& s);
+    Vec& operator/=(const T& rhs);
   };
   
   template <typename T>
@@ -55,9 +55,9 @@ namespace bones
     Vec& operator+=(const Vec& v);
     Vec& operator-=(const Vec& v);
     Vec& operator*=(const Vec& v);
-    Vec& operator*=(const T& s);
+    Vec& operator*=(const T& rhs);
     Vec& operator/=(const Vec& v);
-    Vec& operator/=(const T& s);
+    Vec& operator/=(const T& rhs);
   };
   using Vec2i = Vec<2, int>;
   using Vec2f = Vec<2, float>;
@@ -90,9 +90,9 @@ namespace bones
     Vec& operator+=(const Vec& v);
     Vec& operator-=(const Vec& v);
     Vec& operator*=(const Vec& v);
-    Vec& operator*=(const T& s);
+    Vec& operator*=(const T& rhs);
     Vec& operator/=(const Vec& v);
-    Vec& operator/=(const T& s);
+    Vec& operator/=(const T& rhs);
   };
   using Vec3i = Vec<3, int>;
   using Vec3f = Vec<3, float>;
@@ -119,9 +119,9 @@ namespace bones
     Vec& operator+=(const Vec& v);
     Vec& operator-=(const Vec& v);
     Vec& operator*=(const Vec& v);
-    Vec& operator*=(const T& s);
+    Vec& operator*=(const T& rhs);
     Vec& operator/=(const Vec& v);
-    Vec& operator/=(const T& s);
+    Vec& operator/=(const T& rhs);
   };
   using Vec4i = Vec<4, int>;
   using Vec4f = Vec<4, float>;
@@ -132,14 +132,13 @@ namespace bones
   template<int N, typename T>
   inline Vec<N, T>::Vec(const T& arg)
   {
-    for (const auto& d : data)
-      d = arg;
+    for (int i = 0; i < N; i++)
+      data[i] = arg;
   }
 
   template<int N, typename T>
   inline Vec<N, T>::Vec(const std::initializer_list<T> args)
   {
-    // NOTE: we could allow larger lists (with truncation)
     assert(args.size() <= N);
     int i = 0;
     for (auto it = args.begin(); it != args.end() && i < N; ++it)
@@ -161,198 +160,163 @@ namespace bones
   }
 
   template<int N, typename T>
-  inline Vec<N, T>& Vec<N, T>::operator=(const Vec<N, T>& v)
-  {
-    data = v.data;
-    return *this;
-  }
-
-  template<int N, typename T>
-  inline Vec<N, T>& Vec<N, T>::operator+=(const Vec<N, T>& v)
+  inline Vec<N, T>& Vec<N, T>::operator=(const Vec<N, T>& rhs)
   {
     for (int i = 0; i < N; i++)
-      data[i] += v.data[i];
+      data[i] = rhs[i];
     return *this;
   }
 
   template<int N, typename T>
-  inline Vec<N, T>& Vec<N, T>::operator-=(const Vec<N, T>& v)
+  inline Vec<N, T>& Vec<N, T>::operator+=(const Vec<N, T>& rhs)
   {
     for (int i = 0; i < N; i++)
-      data[i] -= v.data[i];
+      data[i] += rhs[i];
     return *this;
   }
 
   template<int N, typename T>
-  inline Vec<N, T>& Vec<N, T>::operator*=(const Vec<N, T>& v)
+  inline Vec<N, T>& Vec<N, T>::operator-=(const Vec<N, T>& rhs)
   {
     for (int i = 0; i < N; i++)
-      data[i] *= v.data[i];
+      data[i] -= rhs[i];
     return *this;
   }
 
   template<int N, typename T>
-  inline Vec<N, T>& Vec<N, T>::operator*=(const T& s)
+  inline Vec<N, T>& Vec<N, T>::operator*=(const Vec<N, T>& rhs)
   {
     for (int i = 0; i < N; i++)
-      data[i] *= s;
+      data[i] *= rhs[i];
     return *this;
   }
 
   template<int N, typename T>
-  inline Vec<N, T>& Vec<N, T>::operator/=(const Vec<N, T>& v)
+  inline Vec<N, T>& Vec<N, T>::operator*=(const T& rhs)
   {
     for (int i = 0; i < N; i++)
-      data[i] /= v.data[i];
+      data[i] *= rhs;
     return *this;
   }
 
   template<int N, typename T>
-  inline Vec<N, T>& Vec<N, T>::operator/=(const T& s)
+  inline Vec<N, T>& Vec<N, T>::operator/=(const Vec<N, T>& rhs)
   {
     for (int i = 0; i < N; i++)
-      data[i] /= s;
+      data[i] /= rhs[i];
     return *this;
   }
 
   template<int N, typename T>
-  inline Vec<N, T> operator+(const Vec<N, T>& v)
+  inline Vec<N, T>& Vec<N, T>::operator/=(const T& rhs)
+  {
+    for (int i = 0; i < N; i++)
+      data[i] /= rhs;
+    return *this;
+  }
+
+  template<int N, typename T>
+  inline Vec<N, T> operator+(const Vec<N, T>& rhs)
   {
     return v;
   }
 
   template<int N, typename T>
-  inline Vec<N, T> operator-(const Vec<N, T>& v)
+  inline Vec<N, T> operator-(const Vec<N, T>& rhs)
   {
-    Vec<N, T> r;
+    Vec<N, T> result;
     for (int i = 0; i < N; i++)
-      r.data[i] = -v.data[i];
-    return r;
+      result[i] = -rhs[i];
+    return result;
   }
 
   template<int N, typename T>
-  inline Vec<N, T> operator+(const Vec<N, T>& v1, const Vec<N, T>& v2)
+  inline Vec<N, T> operator+(const Vec<N, T>& lhs, const Vec<N, T>& rhs)
   {
-    Vec<N, T> r;
+    Vec<N, T> result;
     for (int i = 0; i < N; i++)
-      r.data[i] = v1.data[i] + v2.data[i];
-    return r;
+      result[i] = lhs[i] + rhs[i];
+    return result;
   }
 
   template<int N, typename T>
-  inline Vec<N, T> operator+(const Vec<N, T>& v, const T& s)
+  inline Vec<N, T> operator-(const Vec<N, T>& lhs, const Vec<N, T>& rhs)
   {
-    Vec<N, T> r;
+    Vec<N, T> result;
     for (int i = 0; i < N; i++)
-      r.data[i] = v.data[i] + s;
-    return r;
+      result[i] = lhs[i] - rhs[i];
+    return result;
   }
 
   template<int N, typename T>
-  inline Vec<N, T> operator+(const T& s, const Vec<N, T>& v)
+  inline Vec<N, T> operator*(const Vec<N, T>& lhs, const Vec<N, T>& rhs)
   {
-    Vec<N, T> r;
+    Vec<N, T> result;
     for (int i = 0; i < N; i++)
-      r.data[i] = s + v.data[i];
-    return r;
+      result[i] = lhs[i] * rhs[i];
+    return result;
   }
 
   template<int N, typename T>
-  inline Vec<N, T> operator-(const Vec<N, T>& v1, const Vec<N, T>& v2)
+  inline Vec<N, T> operator*(const Vec<N, T>& lhs, const T& rhs)
   {
-    Vec<N, T> r;
+    Vec<N, T> result;
     for (int i = 0; i < N; i++)
-      r.data[i] = v1.data[i] - v2.data[i];
-    return r;
+      result[i] = lhs[i] * rhs;
+    return result;
   }
 
   template<int N, typename T>
-  inline Vec<N, T> operator-(const Vec<N, T>& v, const T& s)
+  inline Vec<N, T> operator*(const T& lhs, const Vec<N, T>& rhs)
   {
-    Vec<N, T> r;
+    Vec<N, T> result;
     for (int i = 0; i < N; i++)
-      r.data[i] = v.data[i] - s;
-    return r;
+      result[i] = lhs * rhs[i];
+    return result;
   }
 
   template<int N, typename T>
-  inline Vec<N, T> operator-(const T& s, const Vec<N, T>& v)
+  inline Vec<N, T> operator/(const Vec<N, T>& lhs, const Vec<N, T>& rhs)
   {
-    Vec<N, T> r;
+    Vec<N, T> result;
     for (int i = 0; i < N; i++)
-      r.data[i] = s - v.data[i];
-    return r;
+      result[i] = lhs[i] / rhs[i];
+    return result;
   }
 
   template<int N, typename T>
-  inline Vec<N, T> operator*(const Vec<N, T>& v1, const Vec<N, T>& v2)
+  inline Vec<N, T> operator/(const Vec<N, T>& lhs, const T& rhs)
   {
-    Vec<N, T> r;
+    Vec<N, T> result;
     for (int i = 0; i < N; i++)
-      r.data[i] = v1.data[i] * v2.data[i];
-    return r;
+      result[i] = lhs[i] / rhs;
+    return result;
   }
 
   template<int N, typename T>
-  inline Vec<N, T> operator*(const Vec<N, T>& v, const T& s)
+  inline Vec<N, T> operator/(const T& lhs, const Vec<N, T>& rhs)
+
   {
-    Vec<N, T> r;
+    Vec<N, T> result;
     for (int i = 0; i < N; i++)
-      r.data[i] = v.data[i] * s;
-    return r;
+      result[i] = lhs / rhs[i];
+    return result;
   }
 
   template<int N, typename T>
-  inline Vec<N, T> operator*(const T& s, const Vec<N, T>& v)
-  {
-    Vec<N, T> r;
-    for (int i = 0; i < N; i++)
-      r.data[i] = s * v.data[i];
-    return r;
-  }
-
-  template<int N, typename T>
-  inline Vec<N, T> operator/(const Vec<N, T>& v1, const Vec<N, T>& v2)
-  {
-    Vec<N, T> r;
-    for (int i = 0; i < N; i++)
-      r.data[i] = v1.data[i] / v2.data[i];
-    return r;
-  }
-
-  template<int N, typename T>
-  inline Vec<N, T> operator/(const Vec<N, T>& v, const T& s)
-  {
-    Vec<N, T> r;
-    for (int i = 0; i < N; i++)
-      r.data[i] = v.data[i] / s;
-    return r;
-  }
-
-  template<int N, typename T>
-  inline Vec<N, T> operator/(const T& s, const Vec<N, T>& v)
-
-  {
-    Vec<N, T> r;
-    for (int i = 0; i < N; i++)
-      r.data[i] = s / v.data[i];
-    return r;
-  }
-
-  template<int N, typename T>
-  inline bool operator==(const Vec<N, T>& v1, const Vec<N, T>& v2)
+  inline bool operator==(const Vec<N, T>& lhs, const Vec<N, T>& rhs)
   {
     for (int i = 0; i < N; i++)
-      if (v1.data[i] != v2.data[i])
+      if (lhs[i] != rhs[i])
         return false;
     return true;
   }
 
   template<int N, typename T>
-  inline bool operator!=(const Vec<N, T>& v1, const Vec<N, T>& v2)
+  inline bool operator!=(const Vec<N, T>& lhs, const Vec<N, T>& rhs)
   {
     for (int i = 0; i < N; i++)
-      if (v1.data[i] != v2.data[i])
+      if (lhs[i] != rhs[i])
         return true;
     return false;
   }
@@ -362,11 +326,10 @@ namespace bones
   template<typename T>
   inline Vec<2, T>::Vec(const std::initializer_list<T> args)
   {
-    // NOTE: we could allow larger lists (with truncation)
     assert(args.size() <= 2);
-    int ix = 0;
-    for (auto it = args.begin(); it != args.end() && ix < 2; ++it)
-      data.at(ix++) = *it;
+    int i = 0;
+    for (auto it = args.begin(); it != args.end() && i < 2; ++it)
+      data[i++] = *it;
   }
 
   template<typename T> const Vec<2, T> Vec<2, T>::zero = Vec<2, T>(0);
@@ -389,38 +352,39 @@ namespace bones
   }
 
   template<typename T>
-  inline Vec<2, T>& Vec<2, T>::operator=(const Vec<2, T>& v)
+  inline Vec<2, T>& Vec<2, T>::operator=(const Vec<2, T>& rhs)
   {
-    data = v.data;
+    x = rhs.x;
+    y = rhs.y;
     return *this;
   }
 
   template<typename T>
-  inline Vec<2, T>& Vec<2, T>::operator+=(const Vec<2, T>& v)
+  inline Vec<2, T>& Vec<2, T>::operator+=(const Vec<2, T>& rhs)
   {
-    x += v.x;
-    y += v.y;
+    x += rhs.x;
+    y += rhs.y;
     return *this;
   }
 
   template<typename T>
-  inline Vec<2, T>& Vec<2, T>::operator-=(const Vec<2, T>& v)
+  inline Vec<2, T>& Vec<2, T>::operator-=(const Vec<2, T>& rhs)
   {
-    x -= v.x;
-    y -= v.y;
+    x -= rhs.x;
+    y -= rhs.y;
     return *this;
   }
 
   template<typename T>
-  inline Vec<2, T>& Vec<2, T>::operator*=(const Vec<2, T>& v)
+  inline Vec<2, T>& Vec<2, T>::operator*=(const Vec<2, T>& rhs)
   {
-    x *= v.x;
-    y *= v.y;
+    x *= rhs.x;
+    y *= rhs.y;
     return *this;
   }
 
   template<typename T>
-  inline Vec<2, T>& Vec<2, T>::operator*=(const T& s)
+  inline Vec<2, T>& Vec<2, T>::operator*=(const T& rhs)
   {
     x *= s;
     y *= s;
@@ -428,15 +392,15 @@ namespace bones
   }
 
   template<typename T>
-  inline Vec<2, T>& Vec<2, T>::operator/=(const Vec<2, T>& v)
+  inline Vec<2, T>& Vec<2, T>::operator/=(const Vec<2, T>& rhs)
   {
-    x /= v.x;
-    y /= v.y;
+    x /= rhs.x;
+    y /= rhs.y;
     return *this;
   }
 
   template<typename T>
-  inline Vec<2, T>& Vec<2, T>::operator/=(const T& s)
+  inline Vec<2, T>& Vec<2, T>::operator/=(const T& rhs)
   {
     x /= s;
     y /= s;
@@ -476,41 +440,43 @@ namespace bones
   }
 
   template<typename T>
-  inline Vec<3, T>& Vec<3, T>::operator=(const Vec<3, T>& v)
+  inline Vec<3, T>& Vec<3, T>::operator=(const Vec<3, T>& rhs)
   {
-    data = v.data;
+    x = rhs.x;
+    y = rhs.y;
+    z = rhs.z;
     return *this;
   }
 
   template<typename T>
-  inline Vec<3, T>& Vec<3, T>::operator+=(const Vec<3, T>& v)
+  inline Vec<3, T>& Vec<3, T>::operator+=(const Vec<3, T>& rhs)
   {
-    x += v.x;
-    y += v.y;
-    z += v.z;
+    x += rhs.x;
+    y += rhs.y;
+    z += rhs.z;
     return *this;
   }
 
   template<typename T>
-  inline Vec<3, T>& Vec<3, T>::operator-=(const Vec<3, T>& v)
+  inline Vec<3, T>& Vec<3, T>::operator-=(const Vec<3, T>& rhs)
   {
-    x -= v.x;
-    y -= v.y;
-    z -= v.z;
+    x -= rhs.x;
+    y -= rhs.y;
+    z -= rhs.z;
     return *this;
   }
 
   template<typename T>
-  inline Vec<3, T>& Vec<3, T>::operator*=(const Vec<3, T>& v)
+  inline Vec<3, T>& Vec<3, T>::operator*=(const Vec<3, T>& rhs)
   {
-    x *= v.x;
-    y *= v.y;
-    z *= v.z;
+    x *= rhs.x;
+    y *= rhs.y;
+    z *= rhs.z;
     return *this;
   }
 
   template<typename T>
-  inline Vec<3, T>& Vec<3, T>::operator*=(const T& s)
+  inline Vec<3, T>& Vec<3, T>::operator*=(const T& rhs)
   {
     x *= s;
     y *= s;
@@ -519,16 +485,16 @@ namespace bones
   }
 
   template<typename T>
-  inline Vec<3, T>& Vec<3, T>::operator/=(const Vec<3, T>& v)
+  inline Vec<3, T>& Vec<3, T>::operator/=(const Vec<3, T>& rhs)
   {
-    x /= v.x;
-    y /= v.y;
-    z /= v.z;
+    x /= rhs.x;
+    y /= rhs.y;
+    z /= rhs.z;
     return *this;
   }
 
   template<typename T>
-  inline Vec<3, T>& Vec<3, T>::operator/=(const T& s)
+  inline Vec<3, T>& Vec<3, T>::operator/=(const T& rhs)
   {
     x /= s;
     y /= s;
@@ -563,44 +529,47 @@ namespace bones
   }
 
   template<typename T>
-  inline Vec<4, T>& Vec<4, T>::operator=(const Vec<4, T>& v)
+  inline Vec<4, T>& Vec<4, T>::operator=(const Vec<4, T>& rhs)
   {
-    data = v.data;
+    x = rhs.x;
+    y = rhs.y;
+    z = rhs.z;
+    w = rhs.w;
     return *this;
   }
 
   template<typename T>
-  inline Vec<4, T>& Vec<4, T>::operator+=(const Vec<4, T>& v)
+  inline Vec<4, T>& Vec<4, T>::operator+=(const Vec<4, T>& rhs)
   {
-    x += v.x;
-    y += v.y;
-    z += v.z;
-    w += v.w;
+    x += rhs.x;
+    y += rhs.y;
+    z += rhs.z;
+    w += rhs.w;
     return *this;
   }
 
   template<typename T>
-  inline Vec<4, T>& Vec<4, T>::operator-=(const Vec<4, T>& v)
+  inline Vec<4, T>& Vec<4, T>::operator-=(const Vec<4, T>& rhs)
   {
-    x -= v.x;
-    y -= v.y;
-    z -= v.z;
-    w -= v.w;
+    x -= rhs.x;
+    y -= rhs.y;
+    z -= rhs.z;
+    w -= rhs.w;
     return *this;
   }
 
   template<typename T>
-  inline Vec<4, T>& Vec<4, T>::operator*=(const Vec<4, T>& v)
+  inline Vec<4, T>& Vec<4, T>::operator*=(const Vec<4, T>& rhs)
   {
-    x *= v.x;
-    y *= v.y;
-    z *= v.z;
-    w *= v.w;
+    x *= rhs.x;
+    y *= rhs.y;
+    z *= rhs.z;
+    w *= rhs.w;
     return *this;
   }
 
   template<typename T>
-  inline Vec<4, T>& Vec<4, T>::operator*=(const T& s)
+  inline Vec<4, T>& Vec<4, T>::operator*=(const T& rhs)
   {
     x *= s;
     y *= s;
@@ -610,17 +579,17 @@ namespace bones
   }
 
   template<typename T>
-  inline Vec<4, T>& Vec<4, T>::operator/=(const Vec<4, T>& v)
+  inline Vec<4, T>& Vec<4, T>::operator/=(const Vec<4, T>& rhs)
   {
-    x /= v.x;
-    y /= v.y;
-    z /= v.z;
-    w /= v.w;
+    x /= rhs.x;
+    y /= rhs.y;
+    z /= rhs.z;
+    w /= rhs.w;
     return *this;
   }
 
   template<typename T>
-  inline Vec<4, T>& Vec<4, T>::operator/=(const T& s)
+  inline Vec<4, T>& Vec<4, T>::operator/=(const T& rhs)
   {
     x /= s;
     y /= s;
