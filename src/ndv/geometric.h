@@ -1,2 +1,3 @@
 // reflect, refract, normalize, distance, vector length
-// maybe separate into vec_geometric and mat_geometric classes?
+// angles (between vectors, etc.)
+// TODO: separate into mat_geometric, vec_geometric, and quat_geometric files
