@@ -1,17 +1,21 @@
-#include <ndv/vec/vec2.h>
+#include <ndv/vec.h>
+#include <ndv/mat.h>
+using namespace bones;
 
 #include <iostream>
-#include <array>
 
 int main()
 {
-  // Vec2<int> vi(1, 2);
-  // vi += vi;
+  // Vec2f v1({1.2f, 3.1f});
+  // Vec2f v2({2.2f, 1.1f});
 
-  Vec2<float> vf(1.0f, 2.9f);
-  vf += vf;
+  // Vec2f v = v1 + v2;
 
-  std::cout << vf.norm() << std::endl;
+  // Mat<2, 2, float> m({{0, 1},{2, 3}});
+
+  Mat<2, 2, float> m({0, 1, 2, 3});
+
+  Vec<2, float> v = Vec2f::zero;
 
   return 0;
 }
