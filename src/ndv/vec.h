@@ -216,7 +216,7 @@ namespace ndv
   template<int N, typename T>
   inline Vec<N, T> operator+(const Vec<N, T>& rhs)
   {
-    return v;
+    return rhs;
   }
 
   template<int N, typename T>
@@ -384,8 +384,8 @@ namespace ndv
   template<typename T>
   inline Vec<2, T>& Vec<2, T>::operator*=(const T& rhs)
   {
-    x *= s;
-    y *= s;
+    x *= rhs;
+    y *= rhs;
     return *this;
   }
 
@@ -400,8 +400,8 @@ namespace ndv
   template<typename T>
   inline Vec<2, T>& Vec<2, T>::operator/=(const T& rhs)
   {
-    x /= s;
-    y /= s;
+    x /= rhs;
+    y /= rhs;
     return *this;
   }
 
@@ -476,9 +476,9 @@ namespace ndv
   template<typename T>
   inline Vec<3, T>& Vec<3, T>::operator*=(const T& rhs)
   {
-    x *= s;
-    y *= s;
-    z *= s;
+    x *= rhs;
+    y *= rhs;
+    z *= rhs;
     return *this;
   }
 
@@ -494,9 +494,9 @@ namespace ndv
   template<typename T>
   inline Vec<3, T>& Vec<3, T>::operator/=(const T& rhs)
   {
-    x /= s;
-    y /= s;
-    z /= s;
+    x /= rhs;
+    y /= rhs;
+    z /= rhs;
     return *this;
   }
 
@@ -569,10 +569,10 @@ namespace ndv
   template<typename T>
   inline Vec<4, T>& Vec<4, T>::operator*=(const T& rhs)
   {
-    x *= s;
-    y *= s;
-    z *= s;
-    w *= s;
+    x *= rhs;
+    y *= rhs;
+    z *= rhs;
+    w *= rhs;
     return *this;
   }
 
@@ -589,10 +589,10 @@ namespace ndv
   template<typename T>
   inline Vec<4, T>& Vec<4, T>::operator/=(const T& rhs)
   {
-    x /= s;
-    y /= s;
-    z /= s;
-    w /= s;
+    x /= rhs;
+    y /= rhs;
+    z /= rhs;
+    w /= rhs;
     return *this;
   }
 

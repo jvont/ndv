@@ -6,7 +6,7 @@
 #include <cstdarg>
 #include <type_traits>
 
-#define ENABLE_REAL_T T, typename std::enable_if_t<std::is_floating_point_v<T>>
+#define ENABLE_REAL_T T, typename std::enable_if<std::is_floating_point<T>::value>::type
 
 namespace ndv
 {
@@ -108,17 +108,18 @@ namespace ndv
   template<int N, typename T>
   inline Quat<ENABLE_REAL_T> operator+(const Quat<ENABLE_REAL_T>& rhs)
   {
-    return v;
+    return rhs;
   }
 
   template<int N, typename T>
   inline Quat<ENABLE_REAL_T> operator-(const Quat<ENABLE_REAL_T>& rhs)
   {
-    w = -rhs.w;
-    x = -rhs.x;
-    y = -rhs.y;
-    z = -rhs.z;
-    return *this;
+    return Quat(
+      -rhs.w,
+      -rhs.x,
+      -rhs.y,
+      -rhs.z
+    );
   }
 
   template<int N, typename T>
