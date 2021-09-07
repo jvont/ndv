@@ -1,11 +1,9 @@
 #pragma once
 
 #include <assert.h>
-#include <cstdarg>
+#include <initializer_list>
 
-#include <array>
-
-namespace bones
+namespace ndv
 {
 #pragma region "Vec Definitions"
   template<int N, typename T>
@@ -45,8 +43,8 @@ namespace bones
 
     Vec() = default;
     Vec(const T& arg) : x(arg), y(arg) {}
-    Vec(const std::initializer_list<T> args);
     Vec(const T& x, const T& y) : x(x), y(y) {}
+    Vec(const std::initializer_list<T> args);
 
     T operator[](int i) const;
     T& operator[](int i);
@@ -80,8 +78,8 @@ namespace bones
 
     Vec() = default;
     Vec(const T& arg) : x(arg), y(arg), z(arg) {}
-    Vec(const std::initializer_list<T> args);
     Vec(const T& x, const T& y, const T& z) : x(x), y(y), z(z) {}
+    Vec(const std::initializer_list<T> args);
 
     T operator[](int i) const;
     T& operator[](int i);
@@ -109,8 +107,8 @@ namespace bones
 
     Vec() = default;
     Vec(const T& arg) : x(arg), y(arg), z(arg), w(arg) {}
-    Vec(const std::initializer_list<T> args);
     Vec(const T& x, const T& y, const T& z, const T& w) : x(x), y(y), z(z), w(w) {}
+    Vec(const std::initializer_list<T> args);
 
     T operator[](int i) const;
     T& operator[](int i);

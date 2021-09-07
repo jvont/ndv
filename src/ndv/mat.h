@@ -3,11 +3,9 @@
 #include <ndv/vec.h>
 
 #include <assert.h>
-#include <cstdarg>
+#include <initializer_list>
 
-#include <array>
-
-namespace bones
+namespace ndv
 {
 #pragma region "Mat Definitions"
 
