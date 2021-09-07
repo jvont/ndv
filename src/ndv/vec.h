@@ -68,6 +68,8 @@ namespace ndv
   using Vec2i = Vec<2, int>;
   using Vec2f = Vec<2, float>;
   using Vec2d = Vec<2, double>;
+  
+  using Point2 = Vec<2, int>;
 
   template <typename T>
   struct Vec<3, T>
