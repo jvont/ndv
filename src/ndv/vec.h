@@ -12,7 +12,7 @@ namespace ndv
     T data[N];
 
     Vec() = default;
-    Vec(const T& arg);
+    Vec(T arg);
     Vec(const std::initializer_list<T> args);
 
     T operator[](int i) const;
@@ -22,9 +22,9 @@ namespace ndv
     Vec& operator+=(const Vec& v);
     Vec& operator-=(const Vec& v);
     Vec& operator*=(const Vec& v);
-    Vec& operator*=(const T& rhs);
+    Vec& operator*=(T rhs);
     Vec& operator/=(const Vec& v);
-    Vec& operator/=(const T& rhs);
+    Vec& operator/=(T rhs);
   };
   
   template <typename T>
@@ -42,8 +42,8 @@ namespace ndv
     static const Vec unit_y;
 
     Vec() = default;
-    Vec(const T& arg) : x(arg), y(arg) {}
-    Vec(const T& x, const T& y) : x(x), y(y) {}
+    Vec(T arg) : x(arg), y(arg) {}
+    Vec(T x, T y) : x(x), y(y) {}
     Vec(const std::initializer_list<T> args);
 
     T operator[](int i) const;
@@ -53,9 +53,9 @@ namespace ndv
     Vec& operator+=(const Vec& v);
     Vec& operator-=(const Vec& v);
     Vec& operator*=(const Vec& v);
-    Vec& operator*=(const T& rhs);
+    Vec& operator*=(T rhs);
     Vec& operator/=(const Vec& v);
-    Vec& operator/=(const T& rhs);
+    Vec& operator/=(T rhs);
   };
   using Vec2i = Vec<2, int>;
   using Vec2f = Vec<2, float>;
@@ -77,8 +77,8 @@ namespace ndv
     static const Vec unit_z;
 
     Vec() = default;
-    Vec(const T& arg) : x(arg), y(arg), z(arg) {}
-    Vec(const T& x, const T& y, const T& z) : x(x), y(y), z(z) {}
+    Vec(T arg) : x(arg), y(arg), z(arg) {}
+    Vec(T x, T y, T z) : x(x), y(y), z(z) {}
     Vec(const std::initializer_list<T> args);
 
     T operator[](int i) const;
@@ -88,9 +88,9 @@ namespace ndv
     Vec& operator+=(const Vec& v);
     Vec& operator-=(const Vec& v);
     Vec& operator*=(const Vec& v);
-    Vec& operator*=(const T& rhs);
+    Vec& operator*=(T rhs);
     Vec& operator/=(const Vec& v);
-    Vec& operator/=(const T& rhs);
+    Vec& operator/=(T rhs);
   };
   using Vec3i = Vec<3, int>;
   using Vec3f = Vec<3, float>;
@@ -106,8 +106,8 @@ namespace ndv
     };
 
     Vec() = default;
-    Vec(const T& arg) : x(arg), y(arg), z(arg), w(arg) {}
-    Vec(const T& x, const T& y, const T& z, const T& w) : x(x), y(y), z(z), w(w) {}
+    Vec(T arg) : x(arg), y(arg), z(arg), w(arg) {}
+    Vec(T x, T y, T z, T w) : x(x), y(y), z(z), w(w) {}
     Vec(const std::initializer_list<T> args);
 
     T operator[](int i) const;
@@ -117,9 +117,9 @@ namespace ndv
     Vec& operator+=(const Vec& v);
     Vec& operator-=(const Vec& v);
     Vec& operator*=(const Vec& v);
-    Vec& operator*=(const T& rhs);
+    Vec& operator*=(T rhs);
     Vec& operator/=(const Vec& v);
-    Vec& operator/=(const T& rhs);
+    Vec& operator/=(T rhs);
   };
   using Vec4i = Vec<4, int>;
   using Vec4f = Vec<4, float>;
@@ -128,7 +128,7 @@ namespace ndv
 #pragma endregion
 #pragma region "Base Methods"
   template<int N, typename T>
-  inline Vec<N, T>::Vec(const T& arg)
+  inline Vec<N, T>::Vec(T arg)
   {
     for (int i = 0; i < N; i++)
       data[i] = arg;
@@ -190,7 +190,7 @@ namespace ndv
   }
 
   template<int N, typename T>
-  inline Vec<N, T>& Vec<N, T>::operator*=(const T& rhs)
+  inline Vec<N, T>& Vec<N, T>::operator*=(T rhs)
   {
     for (int i = 0; i < N; i++)
       data[i] *= rhs;
@@ -206,7 +206,7 @@ namespace ndv
   }
 
   template<int N, typename T>
-  inline Vec<N, T>& Vec<N, T>::operator/=(const T& rhs)
+  inline Vec<N, T>& Vec<N, T>::operator/=(T rhs)
   {
     for (int i = 0; i < N; i++)
       data[i] /= rhs;
@@ -256,7 +256,7 @@ namespace ndv
   }
 
   template<int N, typename T>
-  inline Vec<N, T> operator*(const Vec<N, T>& lhs, const T& rhs)
+  inline Vec<N, T> operator*(const Vec<N, T>& lhs, T rhs)
   {
     Vec<N, T> result;
     for (int i = 0; i < N; i++)
@@ -265,7 +265,7 @@ namespace ndv
   }
 
   template<int N, typename T>
-  inline Vec<N, T> operator*(const T& lhs, const Vec<N, T>& rhs)
+  inline Vec<N, T> operator*(T lhs, const Vec<N, T>& rhs)
   {
     Vec<N, T> result;
     for (int i = 0; i < N; i++)
@@ -283,7 +283,7 @@ namespace ndv
   }
 
   template<int N, typename T>
-  inline Vec<N, T> operator/(const Vec<N, T>& lhs, const T& rhs)
+  inline Vec<N, T> operator/(const Vec<N, T>& lhs, T rhs)
   {
     Vec<N, T> result;
     for (int i = 0; i < N; i++)
@@ -292,7 +292,7 @@ namespace ndv
   }
 
   template<int N, typename T>
-  inline Vec<N, T> operator/(const T& lhs, const Vec<N, T>& rhs)
+  inline Vec<N, T> operator/(T lhs, const Vec<N, T>& rhs)
 
   {
     Vec<N, T> result;
@@ -382,7 +382,7 @@ namespace ndv
   }
 
   template<typename T>
-  inline Vec<2, T>& Vec<2, T>::operator*=(const T& rhs)
+  inline Vec<2, T>& Vec<2, T>::operator*=(T rhs)
   {
     x *= rhs;
     y *= rhs;
@@ -398,7 +398,7 @@ namespace ndv
   }
 
   template<typename T>
-  inline Vec<2, T>& Vec<2, T>::operator/=(const T& rhs)
+  inline Vec<2, T>& Vec<2, T>::operator/=(T rhs)
   {
     x /= rhs;
     y /= rhs;
@@ -474,7 +474,7 @@ namespace ndv
   }
 
   template<typename T>
-  inline Vec<3, T>& Vec<3, T>::operator*=(const T& rhs)
+  inline Vec<3, T>& Vec<3, T>::operator*=(T rhs)
   {
     x *= rhs;
     y *= rhs;
@@ -492,7 +492,7 @@ namespace ndv
   }
 
   template<typename T>
-  inline Vec<3, T>& Vec<3, T>::operator/=(const T& rhs)
+  inline Vec<3, T>& Vec<3, T>::operator/=(T rhs)
   {
     x /= rhs;
     y /= rhs;
@@ -567,7 +567,7 @@ namespace ndv
   }
 
   template<typename T>
-  inline Vec<4, T>& Vec<4, T>::operator*=(const T& rhs)
+  inline Vec<4, T>& Vec<4, T>::operator*=(T rhs)
   {
     x *= rhs;
     y *= rhs;
@@ -587,7 +587,7 @@ namespace ndv
   }
 
   template<typename T>
-  inline Vec<4, T>& Vec<4, T>::operator/=(const T& rhs)
+  inline Vec<4, T>& Vec<4, T>::operator/=(T rhs)
   {
     x /= rhs;
     y /= rhs;

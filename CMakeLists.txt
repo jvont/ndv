@@ -5,8 +5,6 @@ project(ndv VERSION 0.1
 
 ###### project config ######
 
-
-
 # enable BUILD_TESTING
 include(CTest)
 
@@ -26,8 +24,11 @@ add_subdirectory(src)
 
 add_executable(main main.cpp)
 target_link_libraries(main PRIVATE ndv)
-
-set_property(TARGET main PROPERTY CXX_STANDARD 17)
+set_target_properties(main PROPERTIES
+    CXX_STANDARD 17
+    CXX_STANDARD_REQUIRED ON
+    CXX_EXTENSIONS OFF
+)
 
 if(BUILD_TESTING)
   add_subdirectory(tests)

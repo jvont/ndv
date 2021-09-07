@@ -1,12 +1,14 @@
 #pragma once
 
+#include <ndv/geometric.h>
 #include <ndv/vec.h>
 
 #include <assert.h>
 #include <cstdarg>
 #include <type_traits>
 
-#define ENABLE_REAL_T T, typename std::enable_if<std::is_floating_point<T>::value>::type
+// shorthand for forcing quaternions for real types
+#define FORCE_REAL_T T, typename std::enable_if_t<std::is_floating_point_v<T>>
 
 namespace ndv
 {
@@ -16,7 +18,7 @@ namespace ndv
 
   // specialize Quat for floating-point types only
   template<typename T>
-  struct Quat<ENABLE_REAL_T>
+  struct Quat<FORCE_REAL_T>
   {
     union
     {
@@ -33,10 +35,10 @@ namespace ndv
     };
 
     Quat() : w(1), x(0), y(0), z(0) {}
-    Quat(const T& arg) : w(arg), x(arg), y(arg), z(arg) {}
-    Quat(const T& w, const T& x, const T& y, const T& z) : w(w), x(x), y(y), z(z) {}
+    Quat(T arg) : w(arg), x(arg), y(arg), z(arg) {}
+    Quat(T w, T x, T y, T z) : w(w), x(x), y(y), z(z) {}
     Quat(const std::initializer_list<T> args);
-    Quat(const Vec<3, T>& axis, const T& angle);
+    Quat(const Vec<3, T>& axis, T angle);
     
     T operator[](int i) const;
     T& operator[](int i);
@@ -50,7 +52,7 @@ namespace ndv
 #pragma endregion
 #pragma region "Base Methods"
   template<typename T>
-  inline Quat<ENABLE_REAL_T>::Quat(const std::initializer_list<T> args)
+  inline Quat<FORCE_REAL_T>::Quat(const std::initializer_list<T> args)
   {
     assert(args.size() <= 4);
     int i = 0;
@@ -59,34 +61,28 @@ namespace ndv
   }
 
   template<typename T>
-  inline Quat<ENABLE_REAL_T>::Quat(const Vec<3, T>& axis, const T& angle)
+  inline Quat<FORCE_REAL_T>::Quat(const Vec<3, T>& axis, T angle)
   {
-    // Vec3 n_axis = normalize(axis);
-    // float sin_angle_2 = sin(angle / 2.0f);
-    // return Quat(
-    //   cos(angle / T(2.0f)),
-    //   n_axis.x * sin_angle_2,
-    //   n_axis.y * sin_angle_2,
-    //   n_axis.z * sin_angle_2
-    // );
+    w = cos(angle / T(2.0f)),
+    real = sin(angle / T(2.0f)) * normalize(axis);
   }
 
   template<typename T>
-  inline T Quat<ENABLE_REAL_T>::operator[](int i) const
+  inline T Quat<FORCE_REAL_T>::operator[](int i) const
   {
     assert(i >= 0 && i < 4);
     return data[i];
   }
 
   template<typename T>
-  inline T& Quat<ENABLE_REAL_T>::operator[](int i)
+  inline T& Quat<FORCE_REAL_T>::operator[](int i)
   {
     assert(i >= 0 && i < 4);
     return data[i];
   }
 
   template<typename T>
-  inline Quat<ENABLE_REAL_T>& Quat<ENABLE_REAL_T>::operator=(const Quat<ENABLE_REAL_T>& rhs)
+  inline Quat<FORCE_REAL_T>& Quat<FORCE_REAL_T>::operator=(const Quat<FORCE_REAL_T>& rhs)
   {
     w = rhs.w;
     x = rhs.x;
@@ -96,7 +92,7 @@ namespace ndv
   }
 
   template<typename T>
-  inline Quat<ENABLE_REAL_T>& Quat<ENABLE_REAL_T>::operator*=(const Quat<ENABLE_REAL_T>& rhs)
+  inline Quat<FORCE_REAL_T>& Quat<FORCE_REAL_T>::operator*=(const Quat<FORCE_REAL_T>& rhs)
   {
     w = w * rhs.w - x * rhs.x - y * rhs.y - z * rhs.z;
     x = w * rhs.x - x * rhs.w - y * rhs.z - z * rhs.y;
@@ -106,13 +102,13 @@ namespace ndv
   }
 
   template<int N, typename T>
-  inline Quat<ENABLE_REAL_T> operator+(const Quat<ENABLE_REAL_T>& rhs)
+  inline Quat<T> operator+(const Quat<T>& rhs)
   {
     return rhs;
   }
 
   template<int N, typename T>
-  inline Quat<ENABLE_REAL_T> operator-(const Quat<ENABLE_REAL_T>& rhs)
+  inline Quat<T> operator-(const Quat<T>& rhs)
   {
     return Quat(
       -rhs.w,
@@ -123,18 +119,18 @@ namespace ndv
   }
 
   template<int N, typename T>
-  inline Quat<ENABLE_REAL_T> operator*(const Quat<ENABLE_REAL_T>& lhs, const Quat<ENABLE_REAL_T>& rhs)
+  inline Quat<T> operator*(const Quat<T>& lhs, const Quat<T>& rhs)
   {
-    Quat<T> result;
-    result.w = lhs.w * rhs.w - lhs.x * rhs.x - lhs.y * rhs.y - lhs.z * rhs.z;
-    result.x = lhs.w * rhs.x - lhs.x * rhs.w - lhs.y * rhs.z - lhs.z * rhs.y;
-    result.y = lhs.w * rhs.y - lhs.x * rhs.z - lhs.y * rhs.w - lhs.z * rhs.x;
-    result.z = lhs.w * rhs.z - lhs.x * rhs.y - lhs.y * rhs.x - lhs.z * rhs.w;
-    return result;
+    return Quat<T>(
+      lhs.w * rhs.w - lhs.x * rhs.x - lhs.y * rhs.y - lhs.z * rhs.z,
+      lhs.w * rhs.x - lhs.x * rhs.w - lhs.y * rhs.z - lhs.z * rhs.y,
+      lhs.w * rhs.y - lhs.x * rhs.z - lhs.y * rhs.w - lhs.z * rhs.x,
+      lhs.w * rhs.z - lhs.x * rhs.y - lhs.y * rhs.x - lhs.z * rhs.w
+    );
   }
 
   template<int N, typename T>
-  inline bool operator==(const Quat<ENABLE_REAL_T>& lhs, const Quat<ENABLE_REAL_T>& rhs)
+  inline bool operator==(const Quat<T>& lhs, const Quat<T>& rhs)
   {
     return (
       lhs.w == rhs.w &&
@@ -145,7 +141,7 @@ namespace ndv
   }
 
   template<int N, typename T>
-  inline bool operator!=(const Quat<ENABLE_REAL_T>& lhs, const Quat<ENABLE_REAL_T>& rhs)
+  inline bool operator!=(const Quat<T>& lhs, const Quat<T>& rhs)
   {
     return (
       lhs.w != rhs.w ||
