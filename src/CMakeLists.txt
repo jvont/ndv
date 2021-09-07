@@ -1,20 +1,25 @@
-# file(GLOB_RECURSE ndvlib_SOURCES CONFIGURE_DEPENDS 
+cmake_minimum_required(VERSION 3.11)
+project(ndv VERSION 0.1
+            DESCRIPTION "N-dimensional spatial vector templates"
+            LANGUAGES CXX)
+
+# file(GLOB_RECURSE ndv_SOURCES CONFIGURE_DEPENDS 
 #   *.cpp
 # )
-# add_library(ndvlib ${ndvlib_SOURCES})
+# add_library(ndv ${ndv_SOURCES})
 
-# target_include_directories(ndvlib 
+# target_include_directories(ndv
 #   PUBLIC
 #     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
 # )
 
-add_library(ndvlib INTERFACE)
+add_library(ndv INTERFACE)
 
-target_include_directories(ndvlib 
+target_include_directories(ndv
   INTERFACE
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
 )
 
 # fine-grained control of cxx standard
-target_compile_features(ndvlib INTERFACE cxx_std_17)
-set_target_properties(ndvlib PROPERTIES CXX_EXTENSIONS OFF)
+target_compile_features(ndv INTERFACE cxx_std_17)
+set_target_properties(ndv PROPERTIES CXX_EXTENSIONS OFF)

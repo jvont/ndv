@@ -9,7 +9,7 @@ FetchContent_MakeAvailable(doctest)
 file(GLOB_RECURSE TESTS_SOURCES CONFIGURE_DEPENDS *.cpp *.h *.hpp)
 add_executable(tests ${TESTS_SOURCES})
 
-target_link_libraries(tests PRIVATE doctest::doctest ndvlib)
+target_link_libraries(tests PRIVATE doctest::doctest ndv)
 
 # set compile features
 target_compile_features(tests PRIVATE cxx_std_17)
