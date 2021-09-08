@@ -14,7 +14,7 @@ namespace ndv
     T data[N];
 
     Vec() = default;
-    Vec(T arg);
+    Vec(T s);
     Vec(const std::initializer_list<T> args);
 
     T operator[](int i) const;
@@ -44,7 +44,7 @@ namespace ndv
     static const Vec unit_y;
 
     Vec() = default;
-    Vec(T arg) : x(arg), y(arg) {}
+    Vec(T s) : x(s), y(s) {}
     Vec(T x, T y) : x(x), y(y) {}
     Vec(const std::initializer_list<T> args);
 
@@ -81,7 +81,7 @@ namespace ndv
     static const Vec unit_z;
 
     Vec() = default;
-    Vec(T arg) : x(arg), y(arg), z(arg) {}
+    Vec(T s) : x(s), y(s), z(s) {}
     Vec(T x, T y, T z) : x(x), y(y), z(z) {}
     Vec(const std::initializer_list<T> args);
 
@@ -110,7 +110,7 @@ namespace ndv
     };
 
     Vec() = default;
-    Vec(T arg) : x(arg), y(arg), z(arg), w(arg) {}
+    Vec(T s) : x(s), y(s), z(s), w(s) {}
     Vec(T x, T y, T z, T w) : x(x), y(y), z(z), w(w) {}
     Vec(const std::initializer_list<T> args);
 
@@ -132,10 +132,10 @@ namespace ndv
 #pragma endregion
 #pragma region "Base Methods"
   template<int N, typename T>
-  inline Vec<N, T>::Vec(T arg)
+  inline Vec<N, T>::Vec(T s)
   {
     for (int i = 0; i < N; i++)
-      data[i] = arg;
+      data[i] = s;
   }
 
   template<int N, typename T>
@@ -612,7 +612,7 @@ namespace ndv
   }
 
   template<int N, typename T>
-  inline typename std::enable_if_t<std::is_floating_point_v<T>, T> length(const Vec<N, T>& rhs)
+  inline typename T length(const Vec<N, T>& rhs)
   {
     return sqrt(length_squared(rhs));
   }
@@ -624,13 +624,13 @@ namespace ndv
   }
 
   template<int N, typename T>
-  inline typename std::enable_if_t<std::is_floating_point_v<T>, T> distance(const Vec<N, T>& lhs, const Vec<N, T>& rhs)
+  inline typename T distance(const Vec<N, T>& lhs, const Vec<N, T>& rhs)
   {
     return length(lhs - rhs);
   }
 
   template<int N, typename T>
-  inline typename std::enable_if_t<std::is_floating_point_v<T>, Vec<N, T>> normalize(const Vec<N, T>& rhs)
+  inline typename Vec<N, T> normalize(const Vec<N, T>& rhs)
   {
     return (rhs / length(rhs));
   }
@@ -655,7 +655,7 @@ namespace ndv
   }
 
   template<int N, typename T>
-  inline typename std::enable_if_t<std::is_floating_point_v<T>, T> angle(const Vec<N, T>& lhs, const Vec<N, T>& rhs)
+  inline typename T angle(const Vec<N, T>& lhs, const Vec<N, T>& rhs)
   {
     return acos(dot(lhs, rhs) / (length(lhs) * length(rhs)));
   }
@@ -673,14 +673,14 @@ namespace ndv
   }
 
   template<int N, typename T>
-  inline typename std::enable_if_t<std::is_floating_point_v<T>, Vec<N, T>> refract(const Vec<N, T>& vi, const Vec<N, T>& vn, T eta)
+  inline typename Vec<N, T> refract(const Vec<N, T>& vi, const Vec<N, T>& vn, T eta)
   {
     T cosI = -dot(vn, vi);
     return eta * vi + (eta * cosI - sqrt(1 - eta * eta * (1 - cosI * cosI))) * vn;
   }
 
   template<int N, typename T>
-  inline typename std::enable_if_t<std::is_floating_point_v<T>, Vec<N, T>> refract(const Vec<N, T>& vi, const Vec<N, T>& vn, T n1, T n2)
+  inline typename Vec<N, T> refract(const Vec<N, T>& vi, const Vec<N, T>& vn, T n1, T n2)
   {
     return refract(vi, vn, n1 / n2);
   }

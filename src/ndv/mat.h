@@ -71,8 +71,8 @@ namespace ndv
     Mat& operator*=(T rhs);
     Mat& operator/=(T rhs);
   };
+  using Mat2x2 = Mat<2, 2, float>;
   using Mat2x2i = Mat<2, 2, int>;
-  using Mat2x2f = Mat<2, 2, float>;
   using Mat2x2d = Mat<2, 2, double>;
 
   template<typename T>
@@ -103,8 +103,8 @@ namespace ndv
     Mat& operator*=(T rhs);
     Mat& operator/=(T rhs);
   };
+  using Mat3x3 = Mat<3, 3, float>;
   using Mat3x3i = Mat<3, 3, int>;
-  using Mat3x3f = Mat<3, 3, float>;
   using Mat3x3d = Mat<3, 3, double>;
 
   template<typename T>
@@ -135,8 +135,8 @@ namespace ndv
     Mat& operator*=(T rhs);
     Mat& operator/=(T rhs);
   };
+  using Mat4x4 = Mat<4, 4, float>;
   using Mat4x4i = Mat<4, 4, int>;
-  using Mat4x4f = Mat<4, 4, float>;
   using Mat4x4d = Mat<4, 4, double>;
 
 #pragma endregion
@@ -212,7 +212,7 @@ namespace ndv
   inline Mat<N, M, T>& Mat<N, M, T>::operator=(const Mat<N, M, T>& rhs)
   {
     for (int r = 0; r < N; c++)
-      data[r] = rhs[r];
+      row[r] = rhs[r];
     return *this;
   }
 
@@ -299,13 +299,13 @@ namespace ndv
   inline Mat<N, O, T> operator*(const Mat<N, M, T>& lhs, const Mat<M, O, T>& rhs)
   {
     Mat<N, O, T> result;
-    for (int c = 0; c < O; c++)
+    for (int r = 0; r < N; r++)
     {
-      for (int r = 0; r < N; r++)
+      for (int c = 0; c < O; c++)
       {
         T val = 0;
         for (int i = 0; i < M; i++)
-          val += lhs[i][r] * rhs[c][i];
+          val += lhs[r][i] * rhs[i][c];
         result[r][c] = val;
       }
     }
@@ -459,7 +459,7 @@ namespace ndv
   inline Mat<2, 2, T>& Mat<2, 2, T>::operator=(const Mat<2, 2, T>& rhs)
   {
     for (int r = 0; r < 2; r++)
-      data[r] = rhs[r];
+      row[r] = rhs[r];
     return *this;
   }
 
@@ -579,7 +579,7 @@ namespace ndv
   inline Mat<3, 3, T>& Mat<3, 3, T>::operator=(const Mat<3, 3, T>& rhs)
   {
     for (int r = 0; r < 3; r++)
-      data[r] = rhs[r];
+      row[r] = rhs[r];
     return *this;
   }
 
@@ -699,7 +699,7 @@ namespace ndv
   inline Mat<4, 4, T>& Mat<4, 4, T>::operator=(const Mat<4, 4, T>& rhs)
   {
     for (int r = 0; r < 4; r++)
-      data[r] = rhs[r];
+      row[r] = rhs[r];
     return *this;
   }
 
@@ -846,226 +846,144 @@ namespace ndv
     return (adjoint(rhs) / determinant(rhs));
   }
 
-  template<int N, typename T>
-  inline Mat<N, N, T> scale(Mat<N, N, T>& result, const Vec<N, T>& scaling)
+  template<typename T>
+  inline Mat<3, 3, T> scale(const Vec<2, T>& scaling)
   {
-    for (int r = 0; r < N; r++)
-      result[r] *= scaling[r];
-    return result;
-  }
-
-  template<int N, typename T>
-  inline Mat<N, N, T> scale(const Vec<N, T>& scaling)
-  {
-    Mat<N, N, T> result = Mat<N, N, T>::identity;
-    scale(&result, scaling);
-    return result;
-  }
-
-  template<int N, typename T>
-  inline Mat<N, N, T> scale_affine(Mat<N, N, T>& result, const Vec<N-1, T>& scaling)
-  {
-    for (int i = 0; i < N-1; i++)
+    Mat<3, 3, T> result;
+    for (int i = 0; i < 2; i++)
       result[i][i] *= scaling[i];
     return result;
   }
 
-  template<int N, typename T>
-  inline Mat<N, N, T> scale_affine(const Vec<N-1, T>& scale)
-  {
-    Mat<N, N, T> result = Mat<N, N, T>::identity;
-    scale(&result, scale);
-    return result;
-  }
-
-  // template<typename T>
-  // inline Mat<2, 2, T> rotate(Mat<2, 2, T>& result, T angle)
-  // {
-  //   T c = cos(angle);
-  //   T s = sin(angle);
-  //   return Mat<2, 2, T>({
-  //     {c, -s},
-  //     {s, c}
-  //   });
-  // }
-
-  // template<typename T>
-  // inline Mat<2, 2, T> rotate(T angle)
-  // {
-  //   
-  // }
-
-  // template<typename T>
-  // inline Mat<3, 3, T> rotate_affine(Mat<3, 3, T>& result, T angle)
-  // {
-  //   T c = cos(angle);
-  //   T s = sin(angle);
-
-  //   Mat<3, 3, T> result;
-  //   result[0] = c * m[0] + s * m[1];
-  //   result[1] = -s * m[0] + c * m[1];
-  //   result[2] = m[2];
-  //   return result;
-  // }
-
-  // template<typename T>
-  // inline Mat<3, 3, T> rotate_affine(T angle)
-  // {
-  //   return rotate(angle, Mat<3, 3, T>::identity);
-  // }
-
-  // nice implmenetation from: https://www.euclideanspace.com/maths/geometry/rotations/conversions/angleToMatrix/index.htm
   template<typename T>
-  inline Mat<3, 3, T> rotate(const Vec<3, T>& axis, T angle)
+  inline void scale(Mat<3, 3, T>& result, const Vec<2, T>& scaling)
   {
-    T c = cos(angle);
-    T s = sin(angle);
+    for (int i = 0; i < 2; i++)
+      result[i][i] *= scaling[i];
+  }
 
-    Vec<3, T> ax = normalize(axis);
-    Vec<3, T> axinv = ((T(1.0f) - c) * ax);
-
-    Mat<3, 3, T> result;
-    result[0][0] = axinv.x * ax.x + c;
-    result[1][0] = axinv.x * ax.y + s * ax.z;
-    result[2][0] = axinv.x * ax.z - s * ax.y;
-
-    result[0][1] = axinv.y * ax.x - s * ax.z;
-    result[1][1] = axinv.y * ax.y + c;
-    result[2][1] = axinv.y * ax.z + s * ax.x;
-
-    result[0][2] = axinv.z * ax.x + s * ax.y;
-    result[1][2] = axinv.z * ax.y - s * ax.x;
-    result[2][2] = axinv.z * ax.z + c;
+  template<typename T>
+  inline Mat<4, 4, T> scale(const Vec<3, T>& scaling)
+  {
+    Mat<4, 4, T> result;
+    for (int i = 0; i < 3; i++)
+      result[i][i] *= scaling[i];
     return result;
   }
 
-  // template<typename T>
-  // inline Mat<3, 3, T> rotate(Mat<3, 3, T>& result, const Vec<3, T>& axis, T angle)
-  // {
-    
-  // }
+  template<typename T>
+  inline void scale(Mat<4, 4, T>& result, const Vec<3, T>& scaling)
+  {
+    for (int i = 0; i < 3; i++)
+      result[i][i] *= scaling[i];
+  }
 
-  // template<typename T>
-  // inline Mat<4, 4, T> rotate_affine(Vec<3, T> axis, T angle)
-  // {
-  //   Mat<3, 3, T> r = rotate(axis, angle);
-  //   Mat<4, 4, T> result;
-  //   for (int r = 0; r < 3; r++)
-  //     for (int c = 0; c < 3; r++)
-  //       result[r][c] = r[r][c];
-  //   return result;
-  // }
+  template<typename T>
+  inline Mat<4, 4, T> rotate(const Vec<3, T>& axis, T angle)
+  {
+    const T c = cos(angle);
+    const T s = sin(angle);
 
-  // template<typename T>
-  // inline Mat<4, 4, T> rotate_affine(Mat<4, 4, T>& result, Vec<3, T> axis, T angle)
-  // {
+    const Vec<3, T> ax = normalize(axis);
+    const Vec<3, T> tax = ((1 - c) * ax);
 
-  // }
+    return Mat<4, 4, T>({
+      {tax.x * ax.x + c,        tax.y * ax.x - s * ax.z, tax.z * ax.x + s * ax.y, 0},
+      {tax.x * ax.y + s * ax.z, tax.y * ax.y + c,        tax.z * ax.y - s * ax.x, 0},
+      {tax.x * ax.z - s * ax.y, tax.y * ax.z + s * ax.x, tax.z * ax.z + c,        0},
+      {0,                       0,                       0,                       1}
+    });
+  }
 
-  // template<typename T>
-  // inline Mat<3, 3, T> translate(Vec<2, T> distance, const Mat<3, 3, T>& m = Mat<3, 3, T>::identity)
-  // {
-  //   Mat<3, 3, T> result = m;
-  //   result[2] = m[0] * distance[0] + m[1] * distance[1] + m[2];
-  //   return result;
-  // }
+  template<typename T>
+  inline Mat<4, 4, T> rotate(Mat<4, 4, T>& result, const Vec<3, T>& axis, T angle)
+  {
+    result *= rotate(axis, angle);
+  }
 
-  // template<typename T>
-  // inline Mat<4, 4, T> translate(Vec<3, T> distance, const Mat<4, 4, T>& m = Mat<4, 4, T>::identity)
-  // {
-  //   Mat<4, 4, T> result = m;
-  //   result[3] = m[0] * distance[0] + m[1] * distance[1] + m[2] * distance[2] + m[3];
-  //   return result;
-  // }
+  template<typename T>
+  inline Mat<4, 4, T> translate(Vec<3, T> distance)
+  {
+    return Mat<4, 4, T>({
+      {1, 0, 0, distance.x},
+      {0, 1, 0, distance.y},
+      {0, 0, 1, distance.z},
+      {0, 0, 0, 1         }
+    });
+  }
 
-  // template<typename T>
-  // inline Mat<4, 4, T> look_at(const Vec<3, float>& eye, const Vec<3, float>& target, const Vec<3, float>& up)
-  // {
+  template<typename T>
+  inline void translate(Mat<4, 4, T>& result, Vec<3, T> distance)
+  {
+    result *= translate(distance);
+  }
 
-  // }
+  template<typename T>
+  inline Mat<4, 4, T> look_at(const Vec<3, T>& eye, const Vec<3, T>& target, const Vec<3, T>& up)
+  {
+    Vec<3, T> f = normalize(target - eye);
+    Vec<3, T> r = normalize(cross(up, f));
+    Vec<3, T> u = cross(f, r);
 
-  // template<typename T>
-  // inline Mat<4, 4, T> orthographic(T left, T right, T top, T bottom, T near, T far)
-  // {
-  //   T m00 = 2.0f / (right - left);
-  //   T m11 = 2.0f / (top - bottom);
-  //   T m30 = -(right + left) / (right - left);
-  //   T m31 = -(top + bottom) / (top - bottom);
-  //   T m32 = -(far + near) / (far - near);
+    Mat<4, 4, T> rot({
+      {r.x, u.x, f.x, 0},
+      {r.y, u.y, f.y, 0},
+      {r.z, u.z, f.z, 0},
+      {0,   0,   0,   1}
+    });
+    return (rot * translate(eye));
+  }
 
-  //   return Mat<4, 4, T>({
-  //     {m00, 0,   0,   0},
-  //     {0,   m11, 0,   0},
-  //     {0,   0,   0,   0},
-  //     {m30, m31, m32, 1}
-  //   });
-  // }
+  template<typename T>
+  inline Mat<4, 4, T> orthographic(T left, T right, T top, T bottom, T near, T far)
+  {
+    return Mat<4, 4, T>({
+      {2 / (right - left), 0,                  -(right + left) / (right - left), 0},
+      {0,                  2 / (top - bottom), -(top + bottom) / (top - bottom), 0},
+      {0,                  0,                  -(far + near) / (far - near),     0},
+      {0,                  0,                  0,                                1}
+    });
+  }
 
-  // template<typename T>
-  // inline Mat<4, 4, T> orthographic(T width, T height, T near, T far)
-  // {
-  //   T right = 0.5f * width;
-  //   T top = 0.5f * height;
+  template<typename T>
+  inline Mat<4, 4, T> orthographic(T width, T height, T near, T far)
+  {
+    return orthographic(-width / 2, width / 2, height / 2, -height / 2, near, far);
+  }
 
-  //   T m00 = 1.0f / right;
-  //   T m11 = 1.0f / top;
-  //   T m22 = -2.0f / far - near;
-  //   T m32 = -(far + near) / (far - near);
-
-  //   return Mat<4, 4, T>({
-  //     {m00, 0,   0,   0},
-  //     {0,   m11, 0,   0},
-  //     {0,   0,   m22, 0},
-  //     {0,   0,   m32, 1}
-  //   });
-  // }
-
-  // Mat4 perspective(T left, T right, T top, T bottom, T near, T far)
-  // {
-  //   T m00 = 2.0f * near / (right - left);
-  //   T m11 = 2.0f * near / (top - bottom);
-  //   T m20 = (right + left) / (right - left);
-  //   T m21 = (top + bottom) / (top - bottom);
-  //   T m22 = -(far + near) / (far - near);
-  //   T m23 = -1.0f;
-  //   T m32 = -2.0f * far * near / (far - near);
-
-  //   return Mat4{{
-  //     {m00, 0,   0,   0  },
-  //     {0,   m11, 0,   0  },
-  //     {m20, m21, m22, m23},
-  //     {0,   0,   m32, 1  }
-  //   }};
-  // }
-
-  // Mat4 perspective(T fov_y, T aspect, T near, T far)
-  // {
-  //   const T tan_fov_y2 = tan(fov_y / 2.0f);
-
-  //   T m00 = 1.0f / (aspect * tan_fov_y2);
-  //   T m11 = 1.0f / tan_fov_y2;
-  //   T m22 = far / (near - far);
-  //   T m23 = -1.0f;
-  //   T m32 = -far * near / (far - near);
-
-  //   return Mat4{{
-  //     {m00, 0,   0,   0  },
-  //     {0,   m11, 0,   0  },
-  //     {0,   0,   m22, m23},
-  //     {0,   0,   m32, 1  }
-  //   }};
-  // }
+  template<typename T>
+  inline Mat<4, 4, T> perspective(T left, T right, T top, T bottom, T near, T far)
+  {
+    return Mat<4, 4, T>({
+      {2 * near / (right - left), 0,                         (right + left) / (right - left),   0                                },
+      {0,                         2 * near / (top - bottom), (top + bottom) / (top - bottom),   0                                },
+      {0,                         0,                         -(far + near) / (far - near),      -2.0f * far * near / (far - near)},
+      {0,                         0,                         -1,                                0                                }
+    });
+  }
+  
+  template<typename T>
+  inline Mat<4, 4, T> perspective(T fov_y, T aspect, T near, T far)
+  {
+    const T t = tan(fov_y / 2.0f);
+    return Mat<4, 4, T>({
+      {1 / (aspect * t), 0,     0,                  0                         },
+      {0,                1 / t, 0,                  0                         },
+      {0,                0,     far / (near - far), -far * near / (far - near)},
+      {0,                0,     1,                  0                         }
+    });
+  }
 
   template<typename T>
   inline bool check_affine(const Mat<3, 3, T>& rhs)
   {
-    return (data[0][2] == 0 && data[1][2] == 0 && data[2][2] == 1);
+    return (rhs[2][0] == 0 && rhs[2][1] == 0 && rhs[2][2] == 1);
   }
 
   template<typename T>
   inline bool check_affine(const Mat<4, 4, T>& rhs)
   {
-    return (data[0][3] == 0 && data[1][3] == 0 && data[2][3] == 0 && data[3][3] == 1);
+    return (rhs[3][0] == 0 && rhs[3][1] == 0 && rhs[3][2] == 0 && rhs[3][3] == 1);
   }
 
 #pragma endregion
