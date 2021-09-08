@@ -20,12 +20,12 @@ namespace ndv
     T operator[](int i) const;
     T& operator[](int i);
 
-    Vec& operator=(const Vec& v);
-    Vec& operator+=(const Vec& v);
-    Vec& operator-=(const Vec& v);
-    Vec& operator*=(const Vec& v);
+    Vec& operator=(const Vec& rhs);
+    Vec& operator+=(const Vec& rhs);
+    Vec& operator-=(const Vec& rhs);
+    Vec& operator*=(const Vec& rhs);
     Vec& operator*=(T rhs);
-    Vec& operator/=(const Vec& v);
+    Vec& operator/=(const Vec& rhs);
     Vec& operator/=(T rhs);
   };
   
@@ -51,16 +51,16 @@ namespace ndv
     T operator[](int i) const;
     T& operator[](int i);
 
-    Vec& operator=(const Vec& v);
-    Vec& operator+=(const Vec& v);
-    Vec& operator-=(const Vec& v);
-    Vec& operator*=(const Vec& v);
+    Vec& operator=(const Vec& rhs);
+    Vec& operator+=(const Vec& rhs);
+    Vec& operator-=(const Vec& rhs);
+    Vec& operator*=(const Vec& rhs);
     Vec& operator*=(T rhs);
-    Vec& operator/=(const Vec& v);
+    Vec& operator/=(const Vec& rhs);
     Vec& operator/=(T rhs);
   };
+  using Vec2 = Vec<2, float>;
   using Vec2i = Vec<2, int>;
-  using Vec2f = Vec<2, float>;
   using Vec2d = Vec<2, double>;
   
   using Point2 = Vec<2, int>;
@@ -88,16 +88,16 @@ namespace ndv
     T operator[](int i) const;
     T& operator[](int i);
 
-    Vec& operator=(const Vec& v);
-    Vec& operator+=(const Vec& v);
-    Vec& operator-=(const Vec& v);
-    Vec& operator*=(const Vec& v);
+    Vec& operator=(const Vec& rhs);
+    Vec& operator+=(const Vec& rhs);
+    Vec& operator-=(const Vec& rhs);
+    Vec& operator*=(const Vec& rhs);
     Vec& operator*=(T rhs);
-    Vec& operator/=(const Vec& v);
+    Vec& operator/=(const Vec& rhs);
     Vec& operator/=(T rhs);
   };
+  using Vec3 = Vec<3, float>;
   using Vec3i = Vec<3, int>;
-  using Vec3f = Vec<3, float>;
   using Vec3d = Vec<3, double>;
 
   template <typename T>
@@ -117,16 +117,16 @@ namespace ndv
     T operator[](int i) const;
     T& operator[](int i);
 
-    Vec& operator=(const Vec& v);
-    Vec& operator+=(const Vec& v);
-    Vec& operator-=(const Vec& v);
-    Vec& operator*=(const Vec& v);
+    Vec& operator=(const Vec& rhs);
+    Vec& operator+=(const Vec& rhs);
+    Vec& operator-=(const Vec& rhs);
+    Vec& operator*=(const Vec& rhs);
     Vec& operator*=(T rhs);
-    Vec& operator/=(const Vec& v);
+    Vec& operator/=(const Vec& rhs);
     Vec& operator/=(T rhs);
   };
+  using Vec4 = Vec<4, float>;
   using Vec4i = Vec<4, int>;
-  using Vec4f = Vec<4, float>;
   using Vec4d = Vec<4, double>;
 
 #pragma endregion
@@ -663,10 +663,7 @@ namespace ndv
   template<typename T>
   inline Vec<2, T> perpendicular(const Vec<2, T>& rhs)
   {
-    return Vec<2, T>(
-      -rhs.y,
-      rhs.x
-    );
+    return Vec<2, T>(-rhs.y, rhs.x);
   }
 
   template<int N, typename T>

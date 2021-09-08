@@ -107,32 +107,17 @@ namespace ndv
 
   inline Quat operator-(const Quat& rhs)
   {
-    return Quat(
-      -rhs.w,
-      -rhs.x,
-      -rhs.y,
-      -rhs.z
-    );
+    return Quat(-rhs.w, -rhs.x, -rhs.y, -rhs.z);
   }
 
   inline Quat operator+(const Quat& lhs, const Quat& rhs)
   {
-    return Quat(
-      lhs.w + rhs.w,
-      lhs.x + rhs.x,
-      lhs.y + rhs.y,
-      lhs.z + rhs.z
-    );
+    return Quat(lhs.w + rhs.w, lhs.x + rhs.x, lhs.y + rhs.y, lhs.z + rhs.z);
   }
 
   inline Quat operator-(const Quat& lhs, const Quat& rhs)
   {
-    return Quat(
-      lhs.w * rhs.w,
-      lhs.x * rhs.x,
-      lhs.y * rhs.y,
-      lhs.z * rhs.z
-    );
+    return Quat(lhs.w * rhs.w, lhs.x * rhs.x, lhs.y * rhs.y, lhs.z * rhs.z);
   }
 
   inline Quat operator*(const Quat& lhs, const Quat& rhs)
@@ -147,62 +132,32 @@ namespace ndv
 
   inline Quat operator*(const Quat& lhs, float rhs)
   {
-    return Quat(
-      lhs.w * rhs,
-      lhs.x * rhs,
-      lhs.y * rhs,
-      lhs.z * rhs
-    );
+    return Quat(lhs.w * rhs, lhs.x * rhs, lhs.y * rhs, lhs.z * rhs);
   }
 
   inline Quat operator*(float lhs, const Quat& rhs)
   {
-    return Quat(
-      lhs * rhs.w,
-      lhs * rhs.x,
-      lhs * rhs.y,
-      lhs * rhs.z
-    );
+    return Quat(lhs * rhs.w, lhs * rhs.x, lhs * rhs.y, lhs * rhs.z);
   }
 
   inline Quat operator/(const Quat& lhs, float rhs)
   {
-    return Quat(
-      lhs.w / rhs,
-      lhs.x / rhs,
-      lhs.y / rhs,
-      lhs.z / rhs
-    );
+    return Quat(lhs.w / rhs, lhs.x / rhs, lhs.y / rhs, lhs.z / rhs);
   }
 
   inline Quat operator/(float lhs, const Quat& rhs)
   {
-    return Quat(
-      lhs / rhs.w,
-      lhs / rhs.x,
-      lhs / rhs.y,
-      lhs / rhs.z
-    );
+    return Quat(lhs / rhs.w, lhs / rhs.x, lhs / rhs.y, lhs / rhs.z);
   }
 
   inline bool operator==(const Quat& lhs, const Quat& rhs)
   {
-    return (
-      lhs.w == rhs.w &&
-      lhs.x == rhs.x &&
-      lhs.y == rhs.y &&
-      lhs.z == rhs.z
-    );
+    return (lhs.w == rhs.w && lhs.x == rhs.x && lhs.y == rhs.y && lhs.z == rhs.z);
   }
 
   inline bool operator!=(const Quat& lhs, const Quat& rhs)
   {
-    return (
-      lhs.w != rhs.w ||
-      lhs.x != rhs.x ||
-      lhs.y != rhs.y ||
-      lhs.z != rhs.z
-    );
+    return (lhs.w != rhs.w || lhs.x != rhs.x || lhs.y != rhs.y || lhs.z != rhs.z);
   }
 
 #pragma endregion
@@ -245,12 +200,7 @@ namespace ndv
 
   inline Quat conjugate(const Quat& rhs)
   {
-    return Quat(
-      rhs.w,
-      -rhs.x,
-      -rhs.y,
-      -rhs.z
-    );
+    return Quat(rhs.w, -rhs.x, -rhs.y, -rhs.z);
   }
 
   inline Quat inverse(const Quat& rhs)
