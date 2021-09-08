@@ -1,5 +1,6 @@
 #pragma once
 
+#include <ndv/mat.h>
 #include <ndv/vec.h>
 
 #include <assert.h>
@@ -310,11 +311,11 @@ template<typename T>
   //   return Quat<T>::identity;
   // }
 
-  template<typename T>
-  inline Quat<T> look_at(const Vec<3, T>& eye, const Vec<3, T>& target)
-  {
-    return look_at(eye, target, Vec<3, T>::unit_y);
-  }
+  // template<typename T>
+  // inline Quat<T> look_at(const Vec<3, T>& eye, const Vec<3, T>& target)
+  // {
+  //   return look_at(eye, target, Vec<3, T>::unit_y);
+  // }
 
   // NOTE: quaternion must be normalized
   template<typename T>
