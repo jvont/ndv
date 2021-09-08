@@ -2,14 +2,15 @@
 
 #include <ndv/mat.h>
 #include <ndv/vec.h>
+#include <ndv/str_helper.h>
 
-#include <assert.h>
+#include <algorithm>
 #include <cmath>
-// #include <cstdarg>
-// #include <type_traits>
+#include <iostream>
 
 namespace ndv
 {
+
 #pragma region "Quat Definitions"
   struct Quat
   {
@@ -19,13 +20,14 @@ namespace ndv
       struct { float x, y, z; };
       Vec<3, float> real;
     };
-
+    
+    static Quat axis_angle(const Vec<3, float>& axis, float angle);
     static const Quat identity;
 
     Quat() : w(1), x(0), y(0), z(0) {}
     Quat(float arg) : w(arg), x(arg), y(arg), z(arg) {}
     Quat(float w, float x, float y, float z) : w(w), x(x), y(y), z(z) {}
-    Quat(const Vec<3, float>& axis, float angle);
+    Quat(float scalar, const Vec<3, float>& real) : w(scalar), real(real) {}
     explicit Quat(const Vec<3, float>& real) : w(0) , real(real) {}
 
     Quat& operator=(const Quat& rhs);
@@ -38,13 +40,14 @@ namespace ndv
 
 #pragma endregion
 #pragma region "Base Methods"
-  const Quat Quat::identity = Quat(1, 0, 0, 0);
-
-  inline Quat::Quat(const Vec<3, float>& axis, float angle)
+  inline Quat Quat::axis_angle(const Vec<3, float>& axis, float angle)
   {
-    w = cos(angle / float(2.0f)),
-    real = sin(angle / float(2.0f)) * normalize(axis);
+    float scalar = cos(angle / 2.0f);
+    Vec<3, float> real = (float)sin(angle / 2.0f) * normalize(axis);
+    return Quat(scalar, real);
   }
+
+  const Quat Quat::identity = Quat(1, 0, 0, 0);
 
   inline Quat& Quat::operator=(const Quat& rhs)
   {
@@ -160,6 +163,12 @@ namespace ndv
     return (lhs.w != rhs.w || lhs.x != rhs.x || lhs.y != rhs.y || lhs.z != rhs.z);
   }
 
+  inline std::ostream& operator<<(std::ostream& os, const Quat& rhs)
+  {
+    os << string_format("{ %.3f, %.3f, %.3f, %.3f }", rhs.w, rhs.x, rhs.y, rhs.z);
+    return os;
+  }
+
 #pragma endregion
 #pragma region "Utility Methods"
   inline float length_squared(const Quat& rhs)
@@ -209,31 +218,10 @@ namespace ndv
   }
 
   // NOTE: quaternion must be normalized
-  inline Vec<3, float> rotate(const Vec<3, float>& v, const Quat& q)
+  inline Vec<3, float> rotate(const Vec<3, float>& v, const Quat& by)
   {
-    return (q * Quat(v) * conjugate(q)).real;
+    return (by * Quat(v) * conjugate(by)).real;
   }
-
-  // // inline Quat look_at(const Vec<3, float>& eye, const Vec<3, float>& target, const Vec<3, float>& up)
-  // {
-  //   Vec<3, float> f = normalize(target - eye); // forward vector
-  //   Vec<3, float> r = normalize(cross(up, f)); // right axis
-  //   Vec<3, float> u = cross(f, r); // rotated up
-
-  //   Mat<3, 3, float> rot({
-  //     {r.x, u.x, f.x},
-  //     {r.y, u.y, f.y},
-  //     {r.z, u.z, f.z}
-  //   });
-  //   // TODO: use Mat3x3
-  //   // return Mat4::to_quat(rot);
-  //   return Quat::identity;
-  // }
-
-  // // inline Quat look_at(const Vec<3, float>& eye, const Vec<3, float>& target)
-  // {
-  //   return look_at(eye, target, Vec<3, float>::unit_y);
-  // }
 
   // NOTE: quaternion must be normalized
   inline Quat slerp(const Quat& q1, const Quat& q2, float t)
@@ -261,11 +249,11 @@ namespace ndv
     return ((a * q1) + ((s * b) * q2));
   }
 
-  // inline Quat slerp_clamp(const Quat& q1, const Quat& q2, float t)
-  // {
-  //   float tc = clamp(t, 0.0f, 1.0f);
-  //   return slerp(q1, q2, tc);
-  // }
+  inline Quat slerp_clamp(const Quat& q1, const Quat& q2, float t)
+  {
+    float tc = std::clamp(t, 0.0f, 1.0f);
+    return slerp(q1, q2, tc);
+  }
 
   inline Quat nlerp(const Quat& q1, const Quat& q2, float t)
   {
@@ -274,22 +262,22 @@ namespace ndv
     return normalize((q1 * (1.0f - t)) + (q2 * (s * t)));
   }
 
-  // inline Quat nlerp_clamp(const Quat& q1, const Quat& q2, float t)
-  // {
-  //   float tc = clamp(t, 0.0f, 1.0f);
-  //   return nlerp(q1, q2, tc);
-  // }
+  inline Quat nlerp_clamp(const Quat& q1, const Quat& q2, float t)
+  {
+    float tc = std::clamp(t, 0.0f, 1.0f);
+    return nlerp(q1, q2, tc);
+  }
 
   inline Quat squad(const Quat& q1, const Quat& q2, const Quat& s1, const Quat& s2, float t)
   {
     return slerp(slerp(q1, q2, t), slerp(s1, s2, t), 2 * t * (1 - t));
   }
 
-  // inline Quat squad_clamp(const Quat& q1, const Quat& q2, const Quat& s1, const Quat& s2, float t)
-  // {
-  //   float tc = clamp(t, 0.0f, 1.0f);
-  //   return squad(q1, q2, s1, s2, tc);
-  // }
+  inline Quat squad_clamp(const Quat& q1, const Quat& q2, const Quat& s1, const Quat& s2, float t)
+  {
+    float tc = std::clamp(t, 0.0f, 1.0f);
+    return squad(q1, q2, s1, s2, tc);
+  }
 
   // // inline Quat spline(const Quat seq[], int sz, float t)
   // {

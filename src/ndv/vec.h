@@ -1,8 +1,12 @@
 #pragma once
 
+#include <ndv/str_helper.h>
+
 #include <assert.h>
 #include <cmath>
 #include <initializer_list>
+#include <iostream>
+#include <typeinfo>
 #include <type_traits>
 
 namespace ndv
@@ -323,6 +327,28 @@ namespace ndv
     return false;
   }
 
+  // NOTE: we do not account for large vectors when printing, use caution
+  template<int N, typename T>
+  inline std::ostream& operator<<(std::ostream& os, const Vec<N, T>& rhs)
+  {
+    const char* fmt = (std::is_floating_point_v<T>) ? "%.3f"
+                    : (std::is_integral_v<T>) ? "%d"
+                    : "      NaN";
+
+    os << "{ ";           
+    for (int i = 0; i < N; i++)
+    {
+      T val = rhs[i];
+      if (val >= 1e3 || (val <= 1e-3f && val != 0))
+        os << string_format("%.1e", val);
+      else
+        os << string_format(fmt, val);
+      os << ", ";
+    }
+    os << "\b\b }";
+    return os;
+  }
+
 #pragma endregion
 #pragma region "Vec2 Methods"
   template<typename T> const Vec<2, T> Vec<2, T>::zero = Vec<2, T>(0);
@@ -612,7 +638,7 @@ namespace ndv
   }
 
   template<int N, typename T>
-  inline typename T length(const Vec<N, T>& rhs)
+  inline T length(const Vec<N, T>& rhs)
   {
     return sqrt(length_squared(rhs));
   }
@@ -624,13 +650,13 @@ namespace ndv
   }
 
   template<int N, typename T>
-  inline typename T distance(const Vec<N, T>& lhs, const Vec<N, T>& rhs)
+  inline T distance(const Vec<N, T>& lhs, const Vec<N, T>& rhs)
   {
     return length(lhs - rhs);
   }
 
   template<int N, typename T>
-  inline typename Vec<N, T> normalize(const Vec<N, T>& rhs)
+  inline Vec<N, T> normalize(const Vec<N, T>& rhs)
   {
     return (rhs / length(rhs));
   }
@@ -655,7 +681,7 @@ namespace ndv
   }
 
   template<int N, typename T>
-  inline typename T angle(const Vec<N, T>& lhs, const Vec<N, T>& rhs)
+  inline T angle(const Vec<N, T>& lhs, const Vec<N, T>& rhs)
   {
     return acos(dot(lhs, rhs) / (length(lhs) * length(rhs)));
   }
@@ -673,14 +699,14 @@ namespace ndv
   }
 
   template<int N, typename T>
-  inline typename Vec<N, T> refract(const Vec<N, T>& vi, const Vec<N, T>& vn, T eta)
+  inline Vec<N, T> refract(const Vec<N, T>& vi, const Vec<N, T>& vn, T eta)
   {
     T cosI = -dot(vn, vi);
     return eta * vi + (eta * cosI - sqrt(1 - eta * eta * (1 - cosI * cosI))) * vn;
   }
 
   template<int N, typename T>
-  inline typename Vec<N, T> refract(const Vec<N, T>& vi, const Vec<N, T>& vn, T n1, T n2)
+  inline Vec<N, T> refract(const Vec<N, T>& vi, const Vec<N, T>& vn, T n1, T n2)
   {
     return refract(vi, vn, n1 / n2);
   }

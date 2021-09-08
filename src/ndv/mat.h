@@ -1,9 +1,12 @@
 #pragma once
 
 #include <ndv/vec.h>
+#include <ndv/str_helper.h>
 
 #include <assert.h>
 #include <initializer_list>
+#include <iostream>
+#include <type_traits>
 
 namespace ndv
 {
@@ -211,7 +214,7 @@ namespace ndv
   template<int N, int M, typename T>
   inline Mat<N, M, T>& Mat<N, M, T>::operator=(const Mat<N, M, T>& rhs)
   {
-    for (int r = 0; r < N; c++)
+    for (int r = 0; r < N; r++)
       row[r] = rhs[r];
     return *this;
   }
@@ -386,6 +389,33 @@ namespace ndv
     return false;
   }
 
+  // NOTE: we do not account for large matrices when printing, use caution
+  template<int N, int M, typename T>
+  inline std::ostream&  operator<<(std::ostream& os, const Mat<N, M, T>& rhs)
+  {
+    const char* fmt = (std::is_floating_point_v<T>) ? "%7.3f"
+                    : (std::is_integral_v<T>) ? "%7d"
+                    : "      NaN";
+
+    for (int r = 0; r < N; r++)
+    {
+      os << "| ";
+      for (int c = 0; c < M; c++)
+      {
+        T val = rhs[r][c];
+        if (val >= 1e3 || (val <= 1e-3 && val != 0))
+          os << string_format("%7.1e", val);
+        else
+          os << string_format(fmt, val);
+        os << ", ";
+      }
+      os << "\b\b |";
+      if (r < N - 1)
+        os << "\n";
+    }
+    return os;
+  }
+
 #pragma endregion
 #pragma region "Mat2 Methods"
   template<typename T> Mat<2, 2, T> Mat<2, 2, T>::diag(T diag_val)
@@ -468,7 +498,7 @@ namespace ndv
   {
     for (int r = 0; r < 2; r++)
       for (int c = 0; c < 2; c++)
-        data[r][c] += rhs[r][c]
+        data[r][c] += rhs[r][c];
     return *this;
   }
 
@@ -477,7 +507,7 @@ namespace ndv
   {
     for (int r = 0; r < 2; r++)
       for (int c = 0; c < 2; c++)
-        data[r][c] -= rhs[r][c]
+        data[r][c] -= rhs[r][c];
     return *this;
   }
 
@@ -588,7 +618,7 @@ namespace ndv
   {
     for (int r = 0; r < 3; r++)
       for (int c = 0; c < 3; c++)
-        data[r][c] += rhs[r][c]
+        data[r][c] += rhs[r][c];
     return *this;
   }
 
@@ -597,7 +627,7 @@ namespace ndv
   {
     for (int r = 0; r < 3; r++)
       for (int c = 0; c < 3; c++)
-        data[r][c] -= rhs[r][c]
+        data[r][c] -= rhs[r][c];
     return *this;
   }
 
@@ -708,7 +738,7 @@ namespace ndv
   {
     for (int r = 0; r < 4; r++)
       for (int c = 0; c < 4; c++)
-        data[r][c] += rhs[r][c]
+        data[r][c] += rhs[r][c];
     return *this;
   }
 
@@ -717,7 +747,7 @@ namespace ndv
   {
     for (int r = 0; r < 4; r++)
       for (int c = 0; c < 4; c++)
-        data[r][c] -= rhs[r][c]
+        data[r][c] -= rhs[r][c];
     return *this;
   }
 
