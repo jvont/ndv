@@ -863,7 +863,7 @@ namespace ndv
   }
 
   template<int N, typename T>
-  inline Mat<N, N, T> scale(Mat<N, N, T>& result, const Vec<N-1, T>& scaling)
+  inline Mat<N, N, T> scale_affine(Mat<N, N, T>& result, const Vec<N-1, T>& scaling)
   {
     for (int i = 0; i < N-1; i++)
       result[i][i] *= scaling[i];
@@ -871,7 +871,7 @@ namespace ndv
   }
 
   template<int N, typename T>
-  inline Mat<N, N, T> scale(const Vec<N-1, T>& scale)
+  inline Mat<N, N, T> scale_affine(const Vec<N-1, T>& scale)
   {
     Mat<N, N, T> result = Mat<N, N, T>::identity;
     scale(&result, scale);
@@ -879,7 +879,7 @@ namespace ndv
   }
 
   // template<typename T>
-  // inline Mat<2, 2, T> rotate(T angle)
+  // inline Mat<2, 2, T> rotate(Mat<2, 2, T>& result, T angle)
   // {
   //   T c = cos(angle);
   //   T s = sin(angle);
@@ -890,13 +890,13 @@ namespace ndv
   // }
 
   // template<typename T>
-  // inline Mat<2, 2, T> rotate(T angle, const Mat<2, 2, T>& m)
+  // inline Mat<2, 2, T> rotate(T angle)
   // {
-  //   return (m * rotate(angle));
+  //   
   // }
 
   // template<typename T>
-  // inline Mat<3, 3, T> rotate(T angle, const Mat<3, 3, T>& m)
+  // inline Mat<3, 3, T> rotate_affine(Mat<3, 3, T>& result, T angle)
   // {
   //   T c = cos(angle);
   //   T s = sin(angle);
@@ -909,7 +909,7 @@ namespace ndv
   // }
 
   // template<typename T>
-  // inline Mat<3, 3, T> rotate(T angle)
+  // inline Mat<3, 3, T> rotate_affine(T angle)
   // {
   //   return rotate(angle, Mat<3, 3, T>::identity);
   // }
@@ -940,19 +940,13 @@ namespace ndv
   }
 
   // template<typename T>
-  // inline Mat<3, 3, T> rotate(const Vec<3, T>& axis, T angle)
+  // inline Mat<3, 3, T> rotate(Mat<3, 3, T>& result, const Vec<3, T>& axis, T angle)
   // {
     
   // }
 
   // template<typename T>
-  // inline Mat<3, 3, T> rotate(Vec<3, T> axis, T angle, const Mat<3, 3, T>& m)
-  // {
-  //   return (m * rotate(axis, angle));
-  // }
-
-  // template<typename T>
-  // inline Mat<4, 4, T> rotate(Vec<3, T> axis, T angle, const Mat<4, 4, T>& m = Mat<4, 4, T>::identity)
+  // inline Mat<4, 4, T> rotate_affine(Vec<3, T> axis, T angle)
   // {
   //   Mat<3, 3, T> r = rotate(axis, angle);
   //   Mat<4, 4, T> result;
@@ -962,11 +956,11 @@ namespace ndv
   //   return result;
   // }
 
-  // // template<typename T>
-  // // inline Mat<4, 4, T> rotate(Vec<3, T> axis, T angle, )
-  // // {
-  // //   return (m * rotate(axis, angle));
-  // // }
+  // template<typename T>
+  // inline Mat<4, 4, T> rotate_affine(Mat<4, 4, T>& result, Vec<3, T> axis, T angle)
+  // {
+
+  // }
 
   // template<typename T>
   // inline Mat<3, 3, T> translate(Vec<2, T> distance, const Mat<3, 3, T>& m = Mat<3, 3, T>::identity)
@@ -982,6 +976,12 @@ namespace ndv
   //   Mat<4, 4, T> result = m;
   //   result[3] = m[0] * distance[0] + m[1] * distance[1] + m[2] * distance[2] + m[3];
   //   return result;
+  // }
+
+  // template<typename T>
+  // inline Mat<4, 4, T> look_at(const Vec<3, float>& eye, const Vec<3, float>& target, const Vec<3, float>& up)
+  // {
+
   // }
 
   // template<typename T>
