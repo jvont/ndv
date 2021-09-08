@@ -8,5 +8,11 @@ using namespace ndv;
 int main()
 {
 
+  Mat<2, 2, float> m({
+    {1, 2},
+    {4, 3}
+  });
+  Mat<2, 2, float> r = transpose(m);
+
   return 0;
 }

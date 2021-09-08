@@ -580,13 +580,24 @@ namespace ndv
 
 #pragma endregion
 #pragma region "Utility Methods"
+  template<int N, int M, typename T>
+  inline Mat<N, M, T>& transpose(const Mat<N, M, T>& rhs)
+  {
+    Mat<N, M, T> result;
+    for (int c = 0; c < M; c++)
+      for (int r = 0; r < N; r++)
+        result[c][r] = rhs[r][c];
+    return result;
+  }
 
-  // Mat2 Mat2::transpose() const
+  // template<int N, int M, typename T>
+  // inline Mat<N, M, T>& determinant(const Mat<N, M, T>& rhs)
   // {
-  //   return Mat2{{
-  //     {row[0][0], row[1][0]},
-  //     {row[0][1], row[1][1]}
-  //   }};
+  //   Mat<N, M, T> result;
+  //   for (int c = 0; c < M; c++)
+  //     for (int r = 0; r < N; r++)
+  //       result[c][r] = rhs[r][c];
+  //   return result;
   // }
 
   // real_t Mat2::determinant() const

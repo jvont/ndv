@@ -5,12 +5,6 @@
 #include <initializer_list>
 #include <type_traits>
 
-// shorthands for forcing vec functions for real (floating-point) types
-// NOTE: some functions are not forced, however their behaviour may be of
-// little use elsewhere
-#define FORCE_REAL_TT typename std::enable_if_t<std::is_floating_point_v<T>, T>
-#define FORCE_REAL_TV typename std::enable_if_t<std::is_floating_point_v<T>, Vec<N, T>>
-
 namespace ndv
 {
 #pragma region "Vec Definitions"
@@ -618,7 +612,7 @@ namespace ndv
   }
 
   template<int N, typename T>
-  inline FORCE_REAL_TT length(const Vec<N, T>& rhs)
+  inline typename std::enable_if_t<std::is_floating_point_v<T>, T> length(const Vec<N, T>& rhs)
   {
     return sqrt(length_squared(rhs));
   }
@@ -630,13 +624,13 @@ namespace ndv
   }
 
   template<int N, typename T>
-  inline FORCE_REAL_TT distance(const Vec<N, T>& lhs, const Vec<N, T>& rhs)
+  inline typename std::enable_if_t<std::is_floating_point_v<T>, T> distance(const Vec<N, T>& lhs, const Vec<N, T>& rhs)
   {
     return length(lhs - rhs);
   }
 
   template<int N, typename T>
-  inline FORCE_REAL_TV normalize(const Vec<N, T>& rhs)
+  inline typename std::enable_if_t<std::is_floating_point_v<T>, Vec<N, T>> normalize(const Vec<N, T>& rhs)
   {
     return (rhs / length(rhs));
   }
@@ -661,7 +655,7 @@ namespace ndv
   }
 
   template<int N, typename T>
-  inline FORCE_REAL_TT angle(const Vec<N, T>& lhs, const Vec<N, T>& rhs)
+  inline typename std::enable_if_t<std::is_floating_point_v<T>, T> angle(const Vec<N, T>& lhs, const Vec<N, T>& rhs)
   {
     return acos(dot(lhs, rhs) / (length(lhs) * length(rhs)));
   }
@@ -682,14 +676,14 @@ namespace ndv
   }
 
   template<int N, typename T>
-  inline FORCE_REAL_TV refract(const Vec<N, T>& vi, const Vec<N, T>& vn, T eta)
+  inline typename std::enable_if_t<std::is_floating_point_v<T>, Vec<N, T>> refract(const Vec<N, T>& vi, const Vec<N, T>& vn, T eta)
   {
     T cosI = -dot(vn, vi);
     return eta * vi + (eta * cosI - sqrt(1 - eta * eta * (1 - cosI * cosI))) * vn;
   }
 
   template<int N, typename T>
-  inline FORCE_REAL_TV refract(const Vec<N, T>& vi, const Vec<N, T>& vn, T n1, T n2)
+  inline typename std::enable_if_t<std::is_floating_point_v<T>, Vec<N, T>> refract(const Vec<N, T>& vi, const Vec<N, T>& vn, T n1, T n2)
   {
     return refract(vi, vn, n1 / n2);
   }
