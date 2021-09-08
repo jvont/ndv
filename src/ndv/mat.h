@@ -918,8 +918,9 @@ namespace ndv
     result *= translate(distance);
   }
 
+  // calculates transformation matrix based on absolute positions
   template<typename T>
-  inline Mat<4, 4, T> look_at(const Vec<3, T>& eye, const Vec<3, T>& target, const Vec<3, T>& up)
+  inline Mat<4, 4, T> look_at(const Vec<3, T>& eye, const Vec<3, T>& target, const Vec<3, T>& up = Vec<3, T>::unit_y)
   {
     Vec<3, T> f = normalize(target - eye);
     Vec<3, T> r = normalize(cross(up, f));
@@ -938,39 +939,44 @@ namespace ndv
   inline Mat<4, 4, T> orthographic(T left, T right, T top, T bottom, T near, T far)
   {
     return Mat<4, 4, T>({
-      {2 / (right - left), 0,                  -(right + left) / (right - left), 0},
-      {0,                  2 / (top - bottom), -(top + bottom) / (top - bottom), 0},
-      {0,                  0,                  -(far + near) / (far - near),     0},
-      {0,                  0,                  0,                                1}
+      {2 / (right - left), 0,                  0,                                -(right + left) / (right - left)},
+      {0,                  2 / (top - bottom), 0,                                -(top + bottom) / (top - bottom)},
+      {0,                  0,                  -2 / (far - near),                -(far + near) / (far - near)    },
+      {0,                  0,                  0,                                1                               }
     });
   }
 
   template<typename T>
   inline Mat<4, 4, T> orthographic(T width, T height, T near, T far)
   {
-    return orthographic(-width / 2, width / 2, height / 2, -height / 2, near, far);
+    return Mat<4, 4, T>({
+      {2 / width,    0,          0,                 0                           },
+      {0,            2 / height, 0,                 0                           },
+      {0,            0,          -2 / (far - near), -(far + near) / (far - near)},
+      {0,            0,          0,                 1                           }
+    });
   }
 
   template<typename T>
   inline Mat<4, 4, T> perspective(T left, T right, T top, T bottom, T near, T far)
   {
     return Mat<4, 4, T>({
-      {2 * near / (right - left), 0,                         (right + left) / (right - left),   0                                },
-      {0,                         2 * near / (top - bottom), (top + bottom) / (top - bottom),   0                                },
-      {0,                         0,                         -(far + near) / (far - near),      -2.0f * far * near / (far - near)},
-      {0,                         0,                         -1,                                0                                }
+      {2 * near / (right - left), 0,                         (right + left) / (right - left),   0                             },
+      {0,                         2 * near / (top - bottom), (top + bottom) / (top - bottom),   0                             },
+      {0,                         0,                         -(far + near) / (far - near),      -2 * far * near / (far - near)},
+      {0,                         0,                         -1,                                0                             }
     });
   }
   
   template<typename T>
   inline Mat<4, 4, T> perspective(T fov_y, T aspect, T near, T far)
   {
-    const T t = tan(fov_y / 2.0f);
+    const T t = tan(fov_y / 2);
     return Mat<4, 4, T>({
-      {1 / (aspect * t), 0,     0,                  0                         },
-      {0,                1 / t, 0,                  0                         },
-      {0,                0,     far / (near - far), -far * near / (far - near)},
-      {0,                0,     1,                  0                         }
+      {1 / (aspect * t), 0,     0,                            0                             },
+      {0,                1 / t, 0,                            0                             },
+      {0,                0,     -(far + near) / (far - near), -2 * far * near / (far - near)},
+      {0,                0,     1,                            0                             }
     });
   }
 
