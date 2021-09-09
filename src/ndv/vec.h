@@ -331,16 +331,16 @@ namespace ndv
   template<int N, typename T>
   inline std::ostream& operator<<(std::ostream& os, const Vec<N, T>& rhs)
   {
-    const char* fmt = (std::is_floating_point_v<T>) ? "%.3f"
-                    : (std::is_integral_v<T>) ? "%d"
+    const char* fmt = (std::is_floating_point_v<T>) ? "%7.3f"
+                    : (std::is_integral_v<T>) ? "%7d"
                     : "      NaN";
 
     os << "{ ";           
     for (int i = 0; i < N; i++)
     {
       T val = rhs[i];
-      if (val >= 1e3 || (val <= 1e-3f && val != 0))
-        os << string_format("%.1e", val);
+      if (val >= 1e3 || (val <= 1e-3 && val != 0))
+        os << string_format("%7.1e", val);
       else
         os << string_format(fmt, val);
       os << ", ";

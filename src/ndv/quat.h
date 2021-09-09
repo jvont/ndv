@@ -5,6 +5,7 @@
 #include <ndv/str_helper.h>
 
 #include <algorithm>
+#include <assert.h>
 #include <cmath>
 #include <iostream>
 
@@ -30,6 +31,9 @@ namespace ndv
     Quat(float scalar, const Vec<3, float>& real) : w(scalar), real(real) {}
     explicit Quat(const Vec<3, float>& real) : w(0) , real(real) {}
 
+    float operator[](int i) const;
+    float& operator[](int i);
+
     Quat& operator=(const Quat& rhs);
     Quat& operator+=(const Quat& rhs);
     Quat& operator-=(const Quat& rhs);
@@ -48,6 +52,40 @@ namespace ndv
   }
 
   const Quat Quat::identity = Quat(1, 0, 0, 0);
+
+  inline float Quat::operator[](int i) const
+  {
+    assert(i >= 0 && i < 4);
+    switch(i)
+    {
+      default:
+      case 0:
+        return w;
+      case 1:
+        return x;
+      case 2:
+        return y;
+      case 3:
+        return z;
+    }
+  }
+
+  inline float& Quat::operator[](int i)
+  {
+    assert(i >= 0 && i < 4);
+    switch(i)
+    {
+      default:
+      case 0:
+        return w;
+      case 1:
+        return x;
+      case 2:
+        return y;
+      case 3:
+        return z;
+    }
+  }
 
   inline Quat& Quat::operator=(const Quat& rhs)
   {
@@ -165,7 +203,15 @@ namespace ndv
 
   inline std::ostream& operator<<(std::ostream& os, const Quat& rhs)
   {
-    os << string_format("{ %.3f, %.3f, %.3f, %.3f }", rhs.w, rhs.x, rhs.y, rhs.z);
+    os << "{ ";
+    for (int i = 0; i < 4; i++)
+    {
+      if (rhs[i] >= 1e3f || (rhs[i] <= 1e-3f && rhs[i] != 0.0f))
+        os << string_format("%7.1e, ", rhs[i]);
+      else
+        os << string_format("%7.3f, ", rhs[i]);
+    }
+    os << "\b\b }";
     return os;
   }
 

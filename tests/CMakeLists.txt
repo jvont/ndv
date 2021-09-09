@@ -12,8 +12,11 @@ add_executable(tests ${TESTS_SOURCES})
 target_link_libraries(tests PRIVATE doctest::doctest ndv)
 
 # set compile features
-target_compile_features(tests PRIVATE cxx_std_17)
-set_target_properties(tests PROPERTIES CXX_EXTENSIONS OFF)
+set_target_properties(tests PROPERTIES
+  CXX_STANDARD 17
+  CXX_STANDARD_REQUIRED ON
+  CXX_EXTENSIONS OFF
+)
 
 # add doctest tests to CTest
 include(doctest)
