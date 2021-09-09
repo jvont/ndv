@@ -1,35 +1,17 @@
-cmake_minimum_required(VERSION 3.11)
+cmake_minimum_required(VERSION 3.14)
 project(ndv VERSION 0.1
             DESCRIPTION "N-dimensional spatial vector templates"
             LANGUAGES CXX)
 
-###### project config ######
-
-# enable BUILD_TESTING
-include(CTest)
-
-# include additional FindModule.cmake files
-list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
-
-# include FetchContent
-# add MakeAvailable macro if <=3.14
-include(FetchContent)
-if(${CMAKE_VERSION} VERSION_LESS 3.14)
-  include(FetchContent_MakeAvailable)
+if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
+  include(CTest)
+  list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 endif()
-
-###### link libraries/executable ######
 
 add_subdirectory(src)
 
-add_executable(main main.cpp)
-target_link_libraries(main PRIVATE ndv)
-set_target_properties(main PROPERTIES
-    CXX_STANDARD 17
-    CXX_STANDARD_REQUIRED ON
-    CXX_EXTENSIONS OFF
-)
-
-if(BUILD_TESTING)
+# run tests if this is the main project
+if((CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME) OR BUILD_TESTING)
+  message("tests!")
   add_subdirectory(tests)
 endif()
