@@ -1,6 +1,5 @@
 # # include FetchContent
 include(FetchContent)
-include(FetchContent_MakeAvailable)
 
 # use doctest for testing
 FetchContent_Declare(
