@@ -32,7 +32,7 @@ namespace ndv
     Vec& operator/=(const Vec& rhs);
     Vec& operator/=(T rhs);
   };
-  
+
   template <typename T>
   struct Vec<2, T>
   {

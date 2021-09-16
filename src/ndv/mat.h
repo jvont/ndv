@@ -74,9 +74,9 @@ namespace ndv
     Mat& operator*=(T rhs);
     Mat& operator/=(T rhs);
   };
-  using Mat2x2 = Mat<2, 2, float>;
-  using Mat2x2i = Mat<2, 2, int>;
-  using Mat2x2d = Mat<2, 2, double>;
+  using Mat2 = Mat<2, 2, float>;
+  using Mat2i = Mat<2, 2, int>;
+  using Mat2d = Mat<2, 2, double>;
 
   template<typename T>
   struct Mat<3, 3, T>
@@ -106,9 +106,9 @@ namespace ndv
     Mat& operator*=(T rhs);
     Mat& operator/=(T rhs);
   };
-  using Mat3x3 = Mat<3, 3, float>;
-  using Mat3x3i = Mat<3, 3, int>;
-  using Mat3x3d = Mat<3, 3, double>;
+  using Mat3 = Mat<3, 3, float>;
+  using Mat3i = Mat<3, 3, int>;
+  using Mat3d = Mat<3, 3, double>;
 
   template<typename T>
   struct Mat<4, 4, T>
@@ -138,9 +138,9 @@ namespace ndv
     Mat& operator*=(T rhs);
     Mat& operator/=(T rhs);
   };
-  using Mat4x4 = Mat<4, 4, float>;
-  using Mat4x4i = Mat<4, 4, int>;
-  using Mat4x4d = Mat<4, 4, double>;
+  using Mat4 = Mat<4, 4, float>;
+  using Mat4i = Mat<4, 4, int>;
+  using Mat4d = Mat<4, 4, double>;
 
 #pragma endregion
 #pragma region "Base Methods"
