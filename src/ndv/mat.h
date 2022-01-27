@@ -1,11 +1,10 @@
 #pragma once
 
 #include <ndv/vec.h>
-#include <ndv/str_helper.h>
 
-#include <assert.h>
+#include <cassert>
+#include <cmath>
 #include <initializer_list>
-#include <iostream>
 #include <type_traits>
 
 namespace ndv
@@ -30,7 +29,7 @@ namespace ndv
     Mat(const std::initializer_list<T> args);
     Mat(const std::initializer_list<std::initializer_list<T>> args);
 
-    Vec<N, T> operator[](int i) const;
+    const Vec<N, T>& operator[](int i) const;
     Vec<N, T>& operator[](int i);
 
     Mat& operator=(const Mat& rhs);
@@ -64,7 +63,7 @@ namespace ndv
     Mat(const std::initializer_list<T> args);
     Mat(const std::initializer_list<std::initializer_list<T>> args);
 
-    Vec<2, T> operator[](int i) const;
+    const Vec<2, T>& operator[](int i) const;
     Vec<2, T>& operator[](int i);
 
     Mat& operator=(const Mat& rhs);
@@ -96,7 +95,7 @@ namespace ndv
     Mat(const std::initializer_list<T> args);
     Mat(const std::initializer_list<std::initializer_list<T>> args);
 
-    Vec<3, T> operator[](int i) const;
+    const Vec<3, T>& operator[](int i) const;
     Vec<3, T>& operator[](int i);
 
     Mat& operator=(const Mat& rhs);
@@ -128,7 +127,7 @@ namespace ndv
     Mat(const std::initializer_list<T> args);
     Mat(const std::initializer_list<std::initializer_list<T>> args);
 
-    Vec<4, T> operator[](int i) const;
+    const Vec<4, T>& operator[](int i) const;
     Vec<4, T>& operator[](int i);
 
     Mat& operator=(const Mat& rhs);
@@ -198,16 +197,16 @@ namespace ndv
   }
 
   template<int N, int M, typename T>
-  inline Vec<N, T> Mat<N, M, T>::operator[](int i) const
+  inline const Vec<N, T>& Mat<N, M, T>::operator[](int i) const
   {
-    assert(i >= 0 && i < M);
+    assert(i >= 0 && i < N);
     return row[i];
   }
 
   template<int N, int M, typename T>
   inline Vec<N, T>& Mat<N, M, T>::operator[](int i)
   {
-    assert(i >= 0 && i < M);
+    assert(i >= 0 && i < N);
     return row[i];
   }
 
@@ -389,33 +388,6 @@ namespace ndv
     return false;
   }
 
-  // NOTE: we do not account for large matrices when printing, use caution
-  template<int N, int M, typename T>
-  inline std::ostream&  operator<<(std::ostream& os, const Mat<N, M, T>& rhs)
-  {
-    const char* fmt = (std::is_floating_point_v<T>) ? "%7.3f"
-                    : (std::is_integral_v<T>) ? "%7d"
-                    : "      NaN";
-
-    for (int r = 0; r < N; r++)
-    {
-      os << "| ";
-      for (int c = 0; c < M; c++)
-      {
-        T val = rhs[r][c];
-        if (val >= 1e3 || (val <= 1e-3 && val != 0))
-          os << string_format("%7.1e", val);
-        else
-          os << string_format(fmt, val);
-        os << ", ";
-      }
-      os << "\b\b |";
-      if (r < N - 1)
-        os << "\n";
-    }
-    return os;
-  }
-
 #pragma endregion
 #pragma region "Mat2 Methods"
   template<typename T> Mat<2, 2, T> Mat<2, 2, T>::diag(T diag_val)
@@ -472,7 +444,7 @@ namespace ndv
   }
 
   template<typename T>
-  inline Vec<2, T> Mat<2, 2, T>::operator[](int i) const
+  inline const Vec<2, T>& Mat<2, 2, T>::operator[](int i) const
   {
     assert(i >= 0 && i < 2);
     return row[i];
@@ -592,7 +564,7 @@ namespace ndv
   }
 
   template<typename T>
-  inline Vec<3, T> Mat<3, 3, T>::operator[](int i) const
+  inline const Vec<3, T>& Mat<3, 3, T>::operator[](int i) const
   {
     assert(i >= 0 && i < 3);
     return row[i];
@@ -712,7 +684,7 @@ namespace ndv
   }
 
   template<typename T>
-  inline Vec<4, T> Mat<4, 4, T>::operator[](int i) const
+  inline const Vec<4, T>& Mat<4, 4, T>::operator[](int i) const
   {
     assert(i >= 0 && i < 4);
     return row[i];
@@ -911,8 +883,8 @@ namespace ndv
   template<typename T>
   inline Mat<4, 4, T> rotate(const Vec<3, T>& axis, T angle)
   {
-    const T c = cos(angle);
-    const T s = sin(angle);
+    const T c = std::cos(angle);
+    const T s = std::sin(angle);
 
     const Vec<3, T> ax = normalize(axis);
     const Vec<3, T> tax = ((1 - c) * ax);
@@ -1001,7 +973,7 @@ namespace ndv
   template<typename T>
   inline Mat<4, 4, T> perspective(T fov_y, T aspect, T near, T far)
   {
-    const T t = tan(fov_y / 2);
+    const T t = std::tan(fov_y / 2);
     return Mat<4, 4, T>({
       {1 / (aspect * t), 0,     0,                            0                             },
       {0,                1 / t, 0,                            0                             },

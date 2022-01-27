@@ -1,12 +1,10 @@
 #pragma once
 
-#include <ndv/str_helper.h>
+// #include <ndv/math.h>
 
-#include <assert.h>
+#include <cassert>
 #include <cmath>
 #include <initializer_list>
-#include <iostream>
-#include <typeinfo>
 #include <type_traits>
 
 namespace ndv
@@ -21,7 +19,7 @@ namespace ndv
     Vec(T s);
     Vec(const std::initializer_list<T> args);
 
-    T operator[](int i) const;
+    const T& operator[](int i) const;
     T& operator[](int i);
 
     Vec& operator=(const Vec& rhs);
@@ -52,7 +50,7 @@ namespace ndv
     Vec(T x, T y) : x(x), y(y) {}
     Vec(const std::initializer_list<T> args);
 
-    T operator[](int i) const;
+    const T& operator[](int i) const;
     T& operator[](int i);
 
     Vec& operator=(const Vec& rhs);
@@ -66,8 +64,6 @@ namespace ndv
   using Vec2 = Vec<2, float>;
   using Vec2i = Vec<2, int>;
   using Vec2d = Vec<2, double>;
-  
-  using Point2 = Vec<2, int>;
 
   template <typename T>
   struct Vec<3, T>
@@ -89,7 +85,7 @@ namespace ndv
     Vec(T x, T y, T z) : x(x), y(y), z(z) {}
     Vec(const std::initializer_list<T> args);
 
-    T operator[](int i) const;
+    const T& operator[](int i) const;
     T& operator[](int i);
 
     Vec& operator=(const Vec& rhs);
@@ -118,7 +114,7 @@ namespace ndv
     Vec(T x, T y, T z, T w) : x(x), y(y), z(z), w(w) {}
     Vec(const std::initializer_list<T> args);
 
-    T operator[](int i) const;
+    const T& operator[](int i) const;
     T& operator[](int i);
 
     Vec& operator=(const Vec& rhs);
@@ -152,7 +148,7 @@ namespace ndv
   }
 
   template<int N, typename T>
-  inline T Vec<N, T>::operator[](int i) const
+  inline const T& Vec<N, T>::operator[](int i) const
   {
     assert(i >= 0 && i < N);
     return data[i];
@@ -327,28 +323,6 @@ namespace ndv
     return false;
   }
 
-  // NOTE: we do not account for large vectors when printing, use caution
-  template<int N, typename T>
-  inline std::ostream& operator<<(std::ostream& os, const Vec<N, T>& rhs)
-  {
-    const char* fmt = (std::is_floating_point_v<T>) ? "%7.3f"
-                    : (std::is_integral_v<T>) ? "%7d"
-                    : "      NaN";
-
-    os << "{ ";           
-    for (int i = 0; i < N; i++)
-    {
-      T val = rhs[i];
-      if (val >= 1e3 || (val <= 1e-3 && val != 0))
-        os << string_format("%7.1e", val);
-      else
-        os << string_format(fmt, val);
-      os << ", ";
-    }
-    os << "\b\b }";
-    return os;
-  }
-
 #pragma endregion
 #pragma region "Vec2 Methods"
   template<typename T> const Vec<2, T> Vec<2, T>::zero = Vec<2, T>(0);
@@ -366,7 +340,7 @@ namespace ndv
   }
 
   template<typename T>
-  inline T Vec<2, T>::operator[](int i) const
+  inline const T& Vec<2, T>::operator[](int i) const
   {
     assert(i >= 0 && i < 2);
     return data[i];
@@ -454,7 +428,7 @@ namespace ndv
   }
 
   template<typename T>
-  inline T Vec<3, T>::operator[](int i) const
+  inline const T& Vec<3, T>::operator[](int i) const
   {
     assert(i >= 0 && i < 3);
     return data[i];
@@ -543,7 +517,7 @@ namespace ndv
   }
 
   template<typename T>
-  inline T Vec<4, T>::operator[](int i) const
+  inline const T& Vec<4, T>::operator[](int i) const
   {
     assert(i >= 0 && i < 4);
     return data[i];
@@ -640,7 +614,7 @@ namespace ndv
   template<int N, typename T>
   inline T length(const Vec<N, T>& rhs)
   {
-    return sqrt(length_squared(rhs));
+    return std::sqrt(length_squared(rhs));
   }
 
   template<int N, typename T>
@@ -683,7 +657,7 @@ namespace ndv
   template<int N, typename T>
   inline T angle(const Vec<N, T>& lhs, const Vec<N, T>& rhs)
   {
-    return acos(dot(lhs, rhs) / (length(lhs) * length(rhs)));
+    return acosf(dot(lhs, rhs) / (length(lhs) * length(rhs)));
   }
 
   template<typename T>
@@ -702,7 +676,7 @@ namespace ndv
   inline Vec<N, T> refract(const Vec<N, T>& vi, const Vec<N, T>& vn, T eta)
   {
     T cosI = -dot(vn, vi);
-    return eta * vi + (eta * cosI - sqrt(1 - eta * eta * (1 - cosI * cosI))) * vn;
+    return eta * vi + (eta * cosI - std::sqrt(1 - eta * eta * (1 - cosI * cosI))) * vn;
   }
 
   template<int N, typename T>

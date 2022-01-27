@@ -1,17 +1,13 @@
 #pragma once
 
-#include <ndv/mat.h>
 #include <ndv/vec.h>
-#include <ndv/str_helper.h>
 
 #include <algorithm>
-#include <assert.h>
+#include <cassert>
 #include <cmath>
-#include <iostream>
 
 namespace ndv
 {
-
 #pragma region "Quat Definitions"
   struct Quat
   {
@@ -31,7 +27,7 @@ namespace ndv
     Quat(float scalar, const Vec<3, float>& real) : w(scalar), real(real) {}
     explicit Quat(const Vec<3, float>& real) : w(0) , real(real) {}
 
-    float operator[](int i) const;
+    const float& operator[](int i) const;
     float& operator[](int i);
 
     Quat& operator=(const Quat& rhs);
@@ -46,17 +42,17 @@ namespace ndv
 #pragma region "Base Methods"
   inline Quat Quat::axis_angle(const Vec<3, float>& axis, float angle)
   {
-    float scalar = cos(angle / 2.0f);
-    Vec<3, float> real = (float)sin(angle / 2.0f) * normalize(axis);
+    float scalar = std::cos(angle / 2.0f);
+    Vec<3, float> real = (float)std::sin(angle / 2.0f) * normalize(axis);
     return Quat(scalar, real);
   }
 
   const Quat Quat::identity = Quat(1, 0, 0, 0);
 
-  inline float Quat::operator[](int i) const
+  inline const float& Quat::operator[](int i) const
   {
     assert(i >= 0 && i < 4);
-    switch(i)
+    switch (i)
     {
       default:
       case 0:
@@ -73,7 +69,7 @@ namespace ndv
   inline float& Quat::operator[](int i)
   {
     assert(i >= 0 && i < 4);
-    switch(i)
+    switch (i)
     {
       default:
       case 0:
@@ -201,20 +197,6 @@ namespace ndv
     return (lhs.w != rhs.w || lhs.x != rhs.x || lhs.y != rhs.y || lhs.z != rhs.z);
   }
 
-  inline std::ostream& operator<<(std::ostream& os, const Quat& rhs)
-  {
-    os << "{ ";
-    for (int i = 0; i < 4; i++)
-    {
-      if (rhs[i] >= 1e3f || (rhs[i] <= 1e-3f && rhs[i] != 0.0f))
-        os << string_format("%7.1e, ", rhs[i]);
-      else
-        os << string_format("%7.3f, ", rhs[i]);
-    }
-    os << "\b\b }";
-    return os;
-  }
-
 #pragma endregion
 #pragma region "Utility Methods"
   inline float length_squared(const Quat& rhs)
@@ -224,7 +206,7 @@ namespace ndv
 
   inline float length(const Quat& rhs)
   {
-    return sqrt(length_squared(rhs));
+    return std::sqrt(length_squared(rhs));
   }
 
   inline Quat normalize(const Quat& rhs)
@@ -276,20 +258,20 @@ namespace ndv
     int s = (cos_th_2 < 0.0f) ? -1 : 1; // shortest path from acos
     cos_th_2 *= s;
 
-    float th_2 = acos(cos_th_2);
-    float sin_th_2 = sqrt(1.0f - cos_th_2 * cos_th_2);
+    float th_2 = std::acos(cos_th_2);
+    float sin_th_2 = std::sqrt(1.0f - cos_th_2 * cos_th_2);
     
     float a, b;
     // theta approaches 180 degrees
-    if (abs(sin_th_2) < 0.001f)
+    if (std::abs(sin_th_2) < 0.001f)
     {
       a = 0.5f;
       b = 0.5f;
     }
     else
     {
-      a = sin((1 - t) * th_2) / sin_th_2;
-      b = sin(t * th_2) / sin_th_2;
+      a = std::sin((1 - t) * th_2) / sin_th_2;
+      b = std::sin(t * th_2) / sin_th_2;
     }
 
     return ((a * q1) + ((s * b) * q2));
